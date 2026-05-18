@@ -1,0 +1,56 @@
+.container { display: flex; flex-direction: column; gap: 2rem; }
+
+.header { display: flex; justify-content: space-between; align-items: center; }
+.header h1 { font-size: 2rem; }
+
+.markAll { color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+
+.list {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition);
+  position: relative;
+}
+
+.item:last-child { border-bottom: none; }
+
+.item:hover { background: var(--muted); }
+
+.unread { background: hsl(221, 83%, 97%); }
+
+.iconBox {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.content { flex: 1; }
+
+.content h4 { font-size: 1rem; margin-bottom: 0.25rem; }
+.content p { color: var(--muted-foreground); font-size: 0.9rem; margin-bottom: 0.25rem; }
+.content span { font-size: 0.8rem; color: var(--muted-foreground); }
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background: var(--primary);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 0.5rem;
+}

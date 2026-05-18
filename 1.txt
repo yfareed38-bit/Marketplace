@@ -1,0 +1,184 @@
+Develop a Professional website for Marketplace Platform with following features:
+
+CORE BUSINESS MODULES
+1. User Module
+
+Users can:
+
+Register/login
+Create profile
+Post ads
+Manage listings
+Save favorites
+Chat with sellers
+Follow sellers
+Rate/review users
+2. Marketplace Module
+
+Core classified system:
+
+Categories
+Listings
+Filters
+Search
+Promotions
+Featured ads
+3. Communication Module
+Real-time chat
+Push notifications
+Email alerts
+WhatsApp integration
+4. Admin Module
+User management
+Ad moderation
+Reports handling
+Payment management
+Analytics dashboard
+COMPLETE WEBSITE PAGES
+PUBLIC PAGES
+1. Home Page
+
+Main landing page.
+
+2. Browse Categories
+
+Examples:
+
+Cars
+Property
+Mobiles
+Bikes
+Electronics
+Jobs
+Services
+Furniture
+Fashion
+3. Category Listing Page
+
+Example:
+
+Cars in Karachi
+
+Features:
+
+Filters
+Sorting
+Grid/List view
+Featured ads
+Pagination
+4. Product/Ad Details Page
+
+Very important page.
+
+Include:
+
+Gallery slider
+Seller profile
+Description
+Location map
+Price
+Contact buttons
+Chat option
+Report ad
+Similar listings
+5. Search Results Page
+
+Advanced search:
+
+Keyword
+Category
+Price
+City
+Condition
+Brand
+Date posted
+6. User Profile Page
+
+Public seller profile:
+
+Profile image
+Member since
+Reviews
+Active listings
+Verification badges
+7. Login / Signup
+
+Options:
+
+Email
+Phone OTP
+Google login
+Facebook login
+8. Post New Ad
+
+Multi-step form:
+
+Category
+Images
+Details
+Price
+Location
+Preview
+Publish
+9. Pricing / Membership Plans
+
+For premium ads:
+
+Featured listings
+Urgent badge
+Top placement
+10. Blog / Help Center
+
+SEO + support:
+
+Safety tips
+Buying guides
+Marketplace rules
+11. Contact Us
+12. About Us
+13. Safety Center
+
+Important for trust.
+
+Include:
+
+Scam prevention
+Verification tips
+Reporting abuse
+
+USER DASHBOARD PAGES
+Dashboard Overview
+Active ads
+Views
+Messages
+Earnings
+My Listings
+Active
+Pending
+Sold
+Expired
+Favorites / Wishlist
+Chat Inbox
+
+Real-time messaging.
+
+Notifications
+Billing & Payments
+Profile Settings
+
+============================================
+
+Git repository
+
+…or create a new repository on the command line
+echo "# Marketplace" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/yfareed38-bit/Marketplace.git
+git push -u origin main
+…or push an existing repository from the command line
+git remote add origin https://github.com/yfareed38-bit/Marketplace.git
+git branch -M main
+git push -u origin main

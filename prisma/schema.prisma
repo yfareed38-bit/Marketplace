@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  listings      Listing[]
+  messagesSent  Message[] @relation("MessagesSent")
+  messagesRcvd  Message[] @relation("MessagesReceived")
+  reviews       Review[]  @relation("UserReviews")
+  givenReviews  Review[]  @relation("GivenReviews")
+}
+
+model Listing {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  price       Float
+  category    String
+  condition   String
+  location    String
+  images      String[]
+  featured    Boolean  @default(false)
+  status      String   @default("ACTIVE") // ACTIVE, SOLD, PENDING, EXPIRED
+  
+  sellerId    String
+  seller      User     @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  content     String
+  read        Boolean  @default(false)
+  
+  senderId    String
+  sender      User     @relation("MessagesSent", fields: [senderId], references: [id], onDelete: Cascade)
+  
+  receiverId  String
+  receiver    User     @relation("MessagesReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  rating      Int
+  comment     String?
+  
+  reviewerId  String
+  reviewer    User     @relation("GivenReviews", fields: [reviewerId], references: [id], onDelete: Cascade)
+  
+  revieweeId  String
+  reviewee    User     @relation("UserReviews", fields: [revieweeId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+}
+
+enum Role {
+  USER
+  SELLER
+  ADMIN
+}

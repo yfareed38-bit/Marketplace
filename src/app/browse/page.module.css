@@ -1,0 +1,183 @@
+.container {
+  max-width: 1280px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  display: flex;
+  gap: 3rem;
+}
+
+.sidebar {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.mainContent {
+  flex: 1;
+}
+
+.filterBox {
+  background: var(--card);
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+
+.filterBox h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+}
+
+.filterGroup {
+  margin-bottom: 2rem;
+}
+
+.filterGroup h4 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+}
+
+.checkboxList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.checkboxItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.checkboxItem input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+.rangeInputs {
+  display: flex;
+  gap: 1rem;
+}
+
+.rangeInputs input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.rangeInputs input:focus {
+  border-color: var(--primary);
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.resultsCount {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.select {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  outline: none;
+}
+
+.viewToggle {
+  display: flex;
+  background: var(--muted);
+  padding: 0.25rem;
+  border-radius: 10px;
+}
+
+.viewBtn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.viewBtnActive {
+  background: white;
+  box-shadow: var(--shadow-sm);
+  font-weight: 600;
+}
+
+.adsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+/* Ad Card styles repeated or extracted to a component later */
+.adCard {
+  background: var(--card);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.adCard:hover {
+  box-shadow: var(--shadow-premium);
+  transform: translateY(-5px);
+}
+
+.adImage {
+  width: 100%;
+  height: 200px;
+  background-color: var(--muted);
+  position: relative;
+}
+
+.adInfo {
+  padding: 1.5rem;
+}
+
+.adCategory {
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.adTitle {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  display: block;
+  font-weight: 700;
+}
+
+.adPrice {
+  font-size: 1.3rem;
+  color: var(--primary);
+  font-weight: 800;
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    display: none; /* Hide sidebar on small screens for now, should use a drawer later */
+  }
+}
