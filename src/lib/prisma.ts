@@ -1,25 +1,37 @@
-import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
-import { withAccelerate } from '@prisma/extension-accelerate';
 
-// Global variable to keep a single instance across hot‑reloads
+// Support both uppercase (standard) and lowercase (Vercel UI quirk) env var names
+const dbUrl =
+  process.env.DATABASE_URL ||
+  process.env.database_url;
+
+// Global singleton – avoids exhausting DB connections during Next.js hot‑reloads
 const globalForPrisma = globalThis as unknown as {
-  prisma?: ReturnType<typeof createPrismaClient>;
+  prisma?: PrismaClient;
 };
 
-function createPrismaClient() {
-  const url = process.env.DATABASE_URL;
-  if (!url) {
-    // Throw a clear error when DB URL is missing – caught by Next.js error overlay locally
-    throw new Error('DATABASE_URL is not set. Configure it in .env or Vercel environment variables.');
+function createPrismaClient(): PrismaClient {
+  if (!dbUrl) {
+    throw new Error(
+      'No database URL found. Set DATABASE_URL in your .env file or Vercel Environment Variables.'
+    );
   }
-  // Prisma v7 requires the accelerate extension; datasourceUrl is read from env automatically
-  // Explicitly pass the URL to avoid ambiguous env loading in Vercel
-  return (new PrismaClient({ datasourceUrl: url }) as any).$extends(withAccelerate());
+
+  return new PrismaClient({
+    datasources: {
+      db: {
+        url: dbUrl,
+      },
+    },
+    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+  });
 }
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+export const prisma: PrismaClient =
+  globalForPrisma.prisma ?? createPrismaClient();
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
 
 export default prisma;
