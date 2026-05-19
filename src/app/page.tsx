@@ -6,129 +6,232 @@ import styles from './page.module.css';
 export const dynamic = 'force-dynamic';
 
 const CATEGORIES = [
-  { id: 'cars', name: 'Cars', icon: '🚗' },
-  { id: 'property', name: 'Property', icon: '🏠' },
-  { id: 'mobiles', name: 'Mobiles', icon: '📱' },
-  { id: 'bikes', name: 'Bikes', icon: '🏍️' },
-  { id: 'electronics', name: 'Electronics', icon: '💻' },
-  { id: 'jobs', name: 'Jobs', icon: '💼' },
-  { id: 'services', name: 'Services', icon: '🛠️' },
-  { id: 'furniture', name: 'Furniture', icon: '🪑' },
+  { id: 'Mobiles', name: 'Mobiles', icon: '📱' },
+  { id: 'Cars', name: 'Vehicles', icon: '🚗' },
+  { id: 'Property', name: 'Property For Sale', icon: '🏠' },
+  { id: 'Property', name: 'Property For Rent', icon: '🔑' },
+  { id: 'Electronics', name: 'Electronics & Home...', icon: '📺' },
+  { id: 'Bikes', name: 'Bikes', icon: '🏍️' },
+  { id: 'Electronics', name: 'Business, Industrial', icon: '🚜' },
+  { id: 'Services', name: 'Services', icon: '🛠️' },
+  { id: 'Jobs', name: 'Jobs', icon: '💼' },
 ];
 
 const MOCK_ADS = [
+  // Mobiles
   {
-    id: '1',
-    title: 'Modern Luxury Apartment',
-    price: 450000,
-    category: 'Property',
-    location: 'Downtown',
-    images: ['/property-1.jpg'],
+    id: 'm1',
+    title: 'iPhone 15 Pro Max - 256GB Dual Sim PTA Approved',
+    price: 345000,
+    category: 'Mobiles',
+    location: 'DHA, Karachi',
+    createdAt: '2 hours ago',
     featured: true,
+    icon: '📱'
   },
   {
-    id: '2',
-    title: 'Tesla Model S Plaid',
-    price: 89000,
+    id: 'm2',
+    title: 'Samsung Galaxy S24 Ultra - 12GB RAM 512GB',
+    price: 310000,
+    category: 'Mobiles',
+    location: 'Gulberg, Lahore',
+    createdAt: '5 hours ago',
+    featured: false,
+    icon: '📱'
+  },
+  // Cars
+  {
+    id: 'c1',
+    title: 'Honda Civic Oriel 2022 - First Owner Mint Condition',
+    price: 6850000,
     category: 'Cars',
-    location: 'West End',
-    images: ['/car-1.jpg'],
+    location: 'G-11, Islamabad',
+    createdAt: '1 day ago',
     featured: true,
+    icon: '🚗'
   },
+  {
+    id: 'c2',
+    title: 'Toyota Corolla Altis Grande 1.8 CVT 2021',
+    price: 5900000,
+    category: 'Cars',
+    location: 'Clifton, Karachi',
+    createdAt: '3 days ago',
+    featured: false,
+    icon: '🚗'
+  },
+  // Bikes
+  {
+    id: 'b1',
+    title: 'Suzuki GS 150 Special Edition 2023 model',
+    price: 385000,
+    category: 'Bikes',
+    location: 'Johar Town, Lahore',
+    createdAt: '4 hours ago',
+    featured: true,
+    icon: '🏍️'
+  },
+  {
+    id: 'b2',
+    title: 'Honda CG 125 Self Start 2024 Brand New',
+    price: 282000,
+    category: 'Bikes',
+    location: 'Saddar, Rawalpindi',
+    createdAt: '12 hours ago',
+    featured: false,
+    icon: '🏍️'
+  },
+  // Property
+  {
+    id: 'p1',
+    title: '5 Marla Luxury Brand New House For Sale',
+    price: 18500000,
+    category: 'Property',
+    location: 'DHA Phase 6, Lahore',
+    createdAt: '2 days ago',
+    featured: true,
+    icon: '🏠'
+  },
+  {
+    id: 'p2',
+    title: '2 Bed Apartment in Centaurus Residencia',
+    price: 45000000,
+    category: 'Property',
+    location: 'F-8, Islamabad',
+    createdAt: '1 week ago',
+    featured: false,
+    icon: '🏠'
+  }
 ];
 
 export default async function Home() {
   const result = await getListings();
   let liveAds = result.success && result.data ? result.data : [];
   
-  // Use mock ads if the DB is empty or fails (for demonstration)
-  const adsToDisplay = liveAds.length > 0 ? liveAds.slice(0, 4) : MOCK_ADS;
+  // Format listings to display. If live DB is empty, use mock ads.
+  const adsToDisplay = liveAds.length > 0 ? liveAds : MOCK_ADS;
+
+  // Filter listings by category for rows
+  const mobileAds = adsToDisplay.filter((ad: any) => ad.category.toLowerCase() === 'mobiles').slice(0, 4);
+  const carAds = adsToDisplay.filter((ad: any) => ad.category.toLowerCase() === 'cars').slice(0, 4);
+  const generalRecommendations = adsToDisplay.slice(0, 8);
 
   return (
     <div className={styles.main}>
-      {/* Hero Section */}
-      <section className={styles.hero}>
-        <div className={styles.heroContent}>
-          <h1 className="animate-fade-in">The Premium Marketplace</h1>
-          <p className="animate-fade-in">Discover extraordinary items from verified sellers in your community.</p>
-          
-          <div className={`${styles.searchBar} animate-fade-in`}>
-            <input type="text" placeholder="What are you looking for?" />
-            <button className={styles.searchBtn}>Search</button>
-          </div>
+      {/* 1. Hero Promo Banner */}
+      <section className={styles.heroPromo}>
+        <div className={styles.promoContent}>
+          <h1>Buy & Sell Classifieds</h1>
+          <p>The premium online classifieds platform in Pakistan</p>
+          <Link href="/browse" className={styles.promoBtn}>
+            Explore Ads
+          </Link>
         </div>
+        <div className={styles.promoImage}>📢</div>
       </section>
 
-      {/* Categories Section */}
+      {/* 2. Categories Section */}
       <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2>Browse Categories</h2>
-          <Link href="/categories" className={styles.viewAll}>View All</Link>
+        <div className={styles.sectionTitle}>
+          <span>All Categories</span>
         </div>
-        
         <div className={styles.categoriesGrid}>
-          {CATEGORIES.map((cat) => (
-            <Link key={cat.id} href={`/browse?category=${cat.id}`} className={styles.categoryCard}>
-              <span className={styles.categoryIcon}>{cat.icon}</span>
-              <span>{cat.name}</span>
+          {CATEGORIES.map((cat, index) => (
+            <Link key={index} href={`/browse?category=${cat.id}`} className={styles.categoryCard}>
+              <div className={styles.categoryIconWrapper}>
+                {cat.icon}
+              </div>
+              <span className={styles.categoryName}>{cat.name}</span>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Featured Ads Section */}
-      <section className={`${styles.section} ${styles.bgLight}`}>
-        <div className={styles.sectionHeader}>
-          <h2>Featured Listings</h2>
-          <Link href="/browse" className={styles.viewAll}>Explore All</Link>
+      {/* 3. Mobile Phones Section */}
+      {mobileAds.length > 0 && (
+        <section className={styles.section}>
+          <div className={styles.sectionTitle}>
+            <span>Mobile Phones</span>
+            <Link href="/browse?category=Mobiles" className={styles.viewAllLink}>
+              View more
+            </Link>
+          </div>
+          <div className={styles.listingsGrid}>
+            {mobileAds.map((ad: any) => (
+              <Link key={ad.id} href={`/product/${ad.id}`} className={styles.adCard}>
+                <div className={styles.adImageContainer}>
+                  {ad.featured && <span className={styles.featuredBadge}>FEATURED</span>}
+                  <button className={styles.favoriteBtn}>♡</button>
+                  <span>{ad.icon || '📱'}</span>
+                </div>
+                <div className={styles.adDetails}>
+                  <div className={styles.adPrice}>Rs {ad.price.toLocaleString()}</div>
+                  <div className={styles.adTitle}>{ad.title}</div>
+                  <div className={styles.adFooter}>
+                    <span>{ad.location}</span>
+                    <span>{ad.createdAt ? (typeof ad.createdAt === 'string' ? ad.createdAt : new Date(ad.createdAt).toLocaleDateString()) : 'Just now'}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 4. Cars Section */}
+      {carAds.length > 0 && (
+        <section className={styles.section}>
+          <div className={styles.sectionTitle}>
+            <span>Cars & Vehicles</span>
+            <Link href="/browse?category=Cars" className={styles.viewAllLink}>
+              View more
+            </Link>
+          </div>
+          <div className={styles.listingsGrid}>
+            {carAds.map((ad: any) => (
+              <Link key={ad.id} href={`/product/${ad.id}`} className={styles.adCard}>
+                <div className={styles.adImageContainer}>
+                  {ad.featured && <span className={styles.featuredBadge}>FEATURED</span>}
+                  <button className={styles.favoriteBtn}>♡</button>
+                  <span>{ad.icon || '🚗'}</span>
+                </div>
+                <div className={styles.adDetails}>
+                  <div className={styles.adPrice}>Rs {ad.price.toLocaleString()}</div>
+                  <div className={styles.adTitle}>{ad.title}</div>
+                  <div className={styles.adFooter}>
+                    <span>{ad.location}</span>
+                    <span>{ad.createdAt ? (typeof ad.createdAt === 'string' ? ad.createdAt : new Date(ad.createdAt).toLocaleDateString()) : 'Just now'}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 5. Fresh Recommendations Section */}
+      <section className={styles.section}>
+        <div className={styles.sectionTitle}>
+          <span>Fresh Recommendations</span>
         </div>
-        
-        <div className={styles.adsGrid}>
-          {adsToDisplay.map((ad: any) => (
+        <div className={styles.listingsGrid}>
+          {generalRecommendations.map((ad: any) => (
             <Link key={ad.id} href={`/product/${ad.id}`} className={styles.adCard}>
-              <div className={styles.adImage}>
-                {ad.featured && <span className={styles.adBadge}>FEATURED</span>}
-                <div style={{ width: '100%', height: '100%', background: 'linear-gradient(45deg, #e2e8f0, #cbd5e1)' }}></div>
+              <div className={styles.adImageContainer}>
+                {ad.featured && <span className={styles.featuredBadge}>FEATURED</span>}
+                <button className={styles.favoriteBtn}>♡</button>
+                <span>{ad.icon || (ad.category === 'Mobiles' ? '📱' : ad.category === 'Cars' ? '🚗' : ad.category === 'Bikes' ? '🏍️' : '🏠')}</span>
               </div>
-              <div className={styles.adInfo}>
-                <span className={styles.adCategory}>{ad.category}</span>
-                <span className={styles.adTitle}>{ad.title}</span>
-                <span className={styles.adPrice}>${ad.price.toLocaleString()}</span>
+              <div className={styles.adDetails}>
+                <div className={styles.adPrice}>Rs {ad.price.toLocaleString()}</div>
+                <div className={styles.adTitle}>{ad.title}</div>
                 <div className={styles.adFooter}>
-                  <span>📍 {ad.location}</span>
-                  <span>{ad.createdAt ? new Date(ad.createdAt).toLocaleDateString() : 'Just now'}</span>
+                  <span>{ad.location}</span>
+                  <span>{ad.createdAt ? (typeof ad.createdAt === 'string' ? ad.createdAt : new Date(ad.createdAt).toLocaleDateString()) : 'Just now'}</span>
                 </div>
               </div>
             </Link>
           ))}
-        </div>
-      </section>
-
-      {/* Trust Section */}
-      <section className={styles.section}>
-        <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
-          <h2 style={{ marginBottom: '1.5rem' }}>Why Trade on Marketplace?</h2>
-          <p style={{ color: 'var(--muted-foreground)', marginBottom: '3rem' }}>
-            We provide a secure and professional environment for all your buying and selling needs.
-          </p>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '3rem' }}>
-            <div>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🛡️</div>
-              <h4 style={{ marginBottom: '0.5rem' }}>Verified Sellers</h4>
-              <p style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)' }}>Shop with confidence from identity-verified community members.</p>
-            </div>
-            <div>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💬</div>
-              <h4 style={{ marginBottom: '0.5rem' }}>Real-time Chat</h4>
-              <p style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)' }}>Connect instantly with sellers through our secure messaging system.</p>
-            </div>
-            <div>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚡</div>
-              <h4 style={{ marginBottom: '0.5rem' }}>Fast Posting</h4>
-              <p style={{ fontSize: '0.9rem', color: 'var(--muted-foreground)' }}>List your items in under a minute with our streamlined process.</p>
-            </div>
-          </div>
         </div>
       </section>
     </div>

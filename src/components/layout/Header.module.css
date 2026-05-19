@@ -1,90 +1,269 @@
-.header {
+.headerContainer {
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 1000;
-  width: 100%;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.container {
+/* Top bar with Motors & Property links and Login / Sell */
+.topBar {
+  background-color: #f7f8f9;
+  border-bottom: 1px solid #f2f4f5;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.topBarContainer {
   max-width: 1280px;
   margin: 0 auto;
   width: 100%;
-  padding: 0 2rem;
+  padding: 0 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.logo {
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  font-weight: 800;
+.topLinks {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.topLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  height: 40px;
+}
+
+.topLink:hover, .topLinkActive {
   color: var(--foreground);
 }
 
-.logo span {
-  color: var(--primary);
-}
-
-.nav {
+.topActions {
   display: flex;
-  gap: 2rem;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-.link {
-  font-weight: 500;
-  color: var(--muted-foreground);
-  font-size: 0.95rem;
+.loginLink {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--foreground);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
-.link:hover {
-  color: var(--primary);
+.loginLink:hover {
+  text-decoration: none;
 }
 
-.actions {
+/* Sell button styled like OLX */
+.sellBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: white;
+  border: 5px solid;
+  border-image: linear-gradient(45deg, #3a77ff, #23e5db, #f7cb15) 1;
+  padding: 0.35rem 0.9rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--foreground);
+  border-radius: 20px; /* Note: border-image disables border-radius sometimes, so we use clip-path or standard border to look like pill */
+  transition: transform 0.1s ease;
+}
+
+.sellBtn:hover {
+  transform: scale(1.03);
+}
+
+/* Middle Bar: Logo, Location, and Search */
+.mainNavRow {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0.75rem 1rem;
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.dashLink {
-  font-weight: 600;
-  color: var(--muted-foreground);
+.logoArea {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.searchSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-grow: 1;
+}
+
+/* Location Dropdown selector */
+.locationWrapper {
+  position: relative;
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.locationInputBox {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--primary);
+  border-radius: 4px;
+  background: white;
+  padding: 0.5rem 0.75rem;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.locationInputBox input {
+  border: none;
+  outline: none;
   font-size: 0.9rem;
-}
-
-.dashLink:hover {
-  color: var(--primary);
-}
-
-.loginBtn {
-  font-weight: 600;
   color: var(--foreground);
-  font-size: 0.9rem;
+  width: 100%;
 }
 
-.postBtn {
+.locationDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 0 0 4px 4px;
+  box-shadow: var(--shadow-lg);
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 1001;
+}
+
+.locationItem {
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid #f2f4f5;
+}
+
+.locationItem:hover {
+  background-color: #f7f8f9;
+}
+
+/* Main Search Box */
+.searchBoxWrapper {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--primary);
+  border-radius: 4px;
+  background: white;
+  flex-grow: 1;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  color: var(--foreground);
+  width: 100%;
+}
+
+.searchBtn {
   background-color: var(--primary);
   color: white;
-  padding: 0.65rem 1.25rem;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  box-shadow: var(--shadow-md);
+  padding: 0.6rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
 }
 
-.postBtn:hover {
+.searchBtn:hover {
   background-color: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+}
+
+/* Bottom Row: Category navigation */
+.categoryBarRow {
+  border-top: 1px solid #f2f4f5;
+  height: 45px;
+  display: flex;
+  align-items: center;
+}
+
+.categoryContainer {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.allCategoriesMenu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--foreground);
+  cursor: pointer;
+}
+
+.navLinksList {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--foreground);
+}
+
+.navLinkItem {
+  font-weight: 400;
+}
+
+.navLinkItem:hover {
+  color: var(--secondary);
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 992px) {
+  .locationWrapper {
+    width: 200px;
+  }
 }
 
 @media (max-width: 768px) {
-  .nav {
+  .topBar {
+    display: none;
+  }
+  .searchSection {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .locationWrapper {
+    width: 100%;
+  }
+  .mainNavRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .categoryBarRow {
     display: none;
   }
 }

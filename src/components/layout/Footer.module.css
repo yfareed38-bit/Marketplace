@@ -1,88 +1,175 @@
-.footer {
-  background-color: var(--card);
-  border-top: 1px solid var(--border);
-  padding: 5rem 0 2rem;
-  margin-top: 5rem;
+/* Main Footer Wrapper */
+.footerSection {
+  background-color: #f7f8f9;
+  border-top: 1px solid #e6ebec;
+  margin-top: 4rem;
 }
 
-.container {
+/* App Promo Banner */
+.appPromoBanner {
+  background-color: rgba(0, 47, 52, 0.03);
+  border-bottom: 1px solid #e6ebec;
+  padding: 2rem 1rem;
+}
+
+.promoContainer {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 2rem;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 4rem;
-  margin-bottom: 4rem;
-}
-
-.info .logo {
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--foreground);
-  display: block;
-  margin-bottom: 1.5rem;
-}
-
-.info .logo span {
-  color: var(--primary);
-}
-
-.description {
-  color: var(--muted-foreground);
-  font-size: 0.95rem;
-  max-width: 300px;
-}
-
-.links h4 {
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-  color: var(--foreground);
-}
-
-.links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.links a {
-  color: var(--muted-foreground);
-  font-size: 0.9rem;
-}
-
-.links a:hover {
-  color: var(--primary);
-}
-
-.bottom {
-  border-top: 1px solid var(--border);
-  padding-top: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: var(--muted-foreground);
-  font-size: 0.85rem;
+  gap: 2rem;
 }
 
-@media (max-width: 1024px) {
-  .grid {
-    grid-template-columns: 1.5fr 1fr 1fr;
+.promoLeft {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.phoneMockup {
+  font-size: 5rem;
+  line-height: 1;
+}
+
+.promoText h2 {
+  font-size: 1.75rem;
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.promoText p {
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
+}
+
+.promoRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.promoRightLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.appBadges {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.appBadge {
+  background-color: #000;
+  color: white;
+  border-radius: 4px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  cursor: pointer;
+  border: 1px solid #333;
+}
+
+.appBadge span {
+  font-size: 0.55rem;
+  font-weight: 400;
+  color: #a0aec0;
+}
+
+/* Main Link Columns */
+.linksGridSection {
+  background-color: #e6ebec;
+  padding: 3rem 1rem;
+}
+
+.linksGridContainer {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.linkColumn h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--foreground);
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+
+.linkColumnList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.linkColumnList a {
+  font-size: 0.75rem;
+  color: #5a7378;
+}
+
+.linkColumnList a:hover {
+  color: var(--foreground);
+}
+
+/* Bottom Bar */
+.bottomBar {
+  background-color: var(--primary);
+  color: white;
+  padding: 1.5rem 1rem;
+}
+
+.bottomContainer {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #a0aec0;
+}
+
+.bottomRight {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.bottomLink:hover {
+  color: white;
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 992px) {
+  .promoContainer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .promoRight {
+    align-items: flex-start;
   }
 }
 
 @media (max-width: 768px) {
-  .grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+  .linksGridContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bottomContainer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
   }
 }
 
 @media (max-width: 480px) {
-  .grid {
+  .linksGridContainer {
     grid-template-columns: 1fr;
   }
 }
