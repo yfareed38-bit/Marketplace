@@ -1,7 +1,33 @@
 import React from 'react';
+import { getAdminStats, getPendingListings, approveListing } from '@/actions/admin';
+import { revalidatePath } from 'next/cache';
+import Link from 'next/link';
 import styles from './page.module.css';
 
-export default function AdminDashboard() {
+export const dynamic = 'force-dynamic';
+
+export default async function AdminDashboard() {
+  const statsRes = await getAdminStats();
+  const pendingRes = await getPendingListings();
+  
+  const stats = statsRes.success && statsRes.data ? statsRes.data : {
+    totalRevenue: 0,
+    totalUsers: 0,
+    newAdsToday: 0,
+    reportsPending: 0
+  };
+  
+  const pendingListings = pendingRes.success && pendingRes.data ? pendingRes.data : [];
+
+  async function handleApprove(formData: FormData) {
+    'use server';
+    const id = formData.get('id') as string;
+    if (id) {
+      await approveListing(id);
+      revalidatePath('/admin');
+    }
+  }
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -12,22 +38,22 @@ export default function AdminDashboard() {
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>
           <span>Total Revenue</span>
-          <h3>$45,280.00</h3>
+          <h3>${stats.totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
           <p className={styles.trendUp}>+12.5% vs last month</p>
         </div>
         <div className={styles.statCard}>
           <span>Active Users</span>
-          <h3>12,482</h3>
+          <h3>{stats.totalUsers.toLocaleString()}</h3>
           <p className={styles.trendUp}>+5.2% vs last month</p>
         </div>
         <div className={styles.statCard}>
           <span>New Ads Today</span>
-          <h3>156</h3>
+          <h3>{stats.newAdsToday}</h3>
           <p className={styles.trendDown}>-2.4% vs yesterday</p>
         </div>
         <div className={styles.statCard}>
           <span>Reports Pending</span>
-          <h3>14</h3>
+          <h3>{stats.reportsPending}</h3>
           <p style={{ color: '#ef4444' }}>High Priority</p>
         </div>
       </div>
@@ -49,24 +75,32 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>iPhone 15 Pro Max</td>
-                <td>John Doe</td>
-                <td>Mobiles</td>
-                <td><span className={styles.statusPending}>Pending</span></td>
-                <td>
-                  <button className={styles.approveBtn}>Approve</button>
-                </td>
-              </tr>
-              <tr>
-                <td>BMW M4 2023</td>
-                <td>Sarah Smith</td>
-                <td>Cars</td>
-                <td><span className={styles.statusPending}>Pending</span></td>
-                <td>
-                  <button className={styles.approveBtn}>Approve</button>
-                </td>
-              </tr>
+              {pendingListings.length === 0 ? (
+                <tr>
+                  <td colSpan={5} style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted-foreground)' }}>
+                    No pending listings in the queue.
+                  </td>
+                </tr>
+              ) : (
+                pendingListings.map((ad: any) => (
+                  <tr key={ad.id}>
+                    <td>
+                      <Link href={`/product/${ad.id}`} style={{ textDecoration: 'none', color: 'inherit', fontWeight: '500' }}>
+                        {ad.title}
+                      </Link>
+                    </td>
+                    <td>{ad.seller?.name || 'Unknown'}</td>
+                    <td>{ad.category}</td>
+                    <td><span className={styles.statusPending}>Pending</span></td>
+                    <td>
+                      <form action={handleApprove}>
+                        <input type="hidden" name="id" value={ad.id} />
+                        <button type="submit" className={styles.approveBtn}>Approve</button>
+                      </form>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </section>

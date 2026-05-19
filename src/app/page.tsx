@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { getListings } from '@/actions/listings';
+import FlashSaleSection from '@/components/home/FlashSaleSection';
 import styles from './page.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -130,7 +131,10 @@ export default async function Home() {
         <div className={styles.promoImage}>📢</div>
       </section>
 
-      {/* 2. Categories Section */}
+      {/* 2. Flash Sale Deals Section */}
+      <FlashSaleSection />
+
+      {/* 3. Categories Section */}
       <section className={styles.section}>
         <div className={styles.sectionTitle}>
           <span>All Categories</span>
@@ -147,7 +151,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 3. Mobile Phones Section */}
+      {/* 4. Mobile Phones Section */}
       {mobileAds.length > 0 && (
         <section className={styles.section}>
           <div className={styles.sectionTitle}>
@@ -178,7 +182,7 @@ export default async function Home() {
         </section>
       )}
 
-      {/* 4. Cars Section */}
+      {/* 5. Cars Section */}
       {carAds.length > 0 && (
         <section className={styles.section}>
           <div className={styles.sectionTitle}>
@@ -209,7 +213,7 @@ export default async function Home() {
         </section>
       )}
 
-      {/* 5. Fresh Recommendations Section */}
+      {/* 6. Fresh Recommendations Section */}
       <section className={styles.section}>
         <div className={styles.sectionTitle}>
           <span>Fresh Recommendations</span>

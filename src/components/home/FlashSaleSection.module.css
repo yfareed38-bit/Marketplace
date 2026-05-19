@@ -1,0 +1,221 @@
+.flashContainer {
+  background: var(--card);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.titleArea {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.flashIcon {
+  font-size: 1.8rem;
+  color: var(--secondary);
+  animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+  from { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255, 107, 107, 0.4)); }
+  to { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.8)); }
+}
+
+.titleArea h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--foreground);
+  letter-spacing: -0.5px;
+}
+
+.timerBox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--primary-light);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.timerText {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.countdown {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--primary);
+}
+
+.countdown span {
+  background-color: var(--primary);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.viewMore {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--primary);
+  border-bottom: 2px solid transparent;
+  transition: var(--transition);
+}
+
+.viewMore:hover {
+  color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.productCard {
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.productCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -4px rgba(124, 58, 237, 0.08);
+  border-color: rgba(124, 58, 237, 0.2);
+}
+
+.discountBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background-color: var(--secondary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(255, 107, 107, 0.2);
+}
+
+.productIconWrapper {
+  font-size: 3.5rem;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.6rem;
+  line-height: 1.3;
+}
+
+.title:hover {
+  color: var(--primary);
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.salePrice {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.originalPrice {
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+  text-decoration: line-through;
+}
+
+.stockStatus {
+  margin-bottom: 1.25rem;
+}
+
+.progressBar {
+  height: 6px;
+  background-color: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.35rem;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--secondary) 0%, var(--secondary-hover) 100%);
+  border-radius: 3px;
+}
+
+.stockTexts {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  font-weight: 600;
+}
+
+.addCartBtn {
+  width: 100%;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.65rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.addCartBtn:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}

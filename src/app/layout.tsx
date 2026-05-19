@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Providers } from "@/components/providers/Providers";
+import { CartProvider } from "@/context/CartContext";
 
 import { Suspense } from 'react';
 
@@ -21,13 +22,15 @@ export default function RootLayout({
     <html lang="en">
       <body className="animate-fade-in">
         <Providers>
-          <Suspense fallback={<div style={{ height: '120px', backgroundColor: '#ffffff' }}></div>}>
-            <Header />
-          </Suspense>
-          <main className="app-container">
-            {children}
-          </main>
-          <Footer />
+          <CartProvider>
+            <Suspense fallback={<div style={{ height: '120px', backgroundColor: '#ffffff' }}></div>}>
+              <Header />
+            </Suspense>
+            <main className="app-container">
+              {children}
+            </main>
+            <Footer />
+          </CartProvider>
         </Providers>
       </body>
     </html>

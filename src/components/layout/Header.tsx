@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
+import { useCart } from '@/context/CartContext';
 import styles from './Header.module.css';
 
 const PAKISTAN_CITIES = [
@@ -34,6 +35,7 @@ const Header = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { cart, isCartOpen, setIsCartOpen, updateQuantity, removeFromCart, clearCart } = useCart();
 
   const [location, setLocation] = useState('Pakistan');
   const [showLocations, setShowLocations] = useState(false);
@@ -88,6 +90,8 @@ const Header = () => {
     router.push(`/browse?${params.toString()}`);
   };
 
+  const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
     <header className={styles.headerContainer}>
       {/* 1. Top Bar: Sub-brands and Login/Sell */}
@@ -129,7 +133,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* 2. Main Nav Row: Brand Logo, Location Box, Search Bar */}
+      {/* 2. Main Nav Row: Brand Logo, Location Box, Search Bar, Cart */}
       <div className={styles.mainNavRow}>
         {/* Custom Premium Brand Logo */}
         <Link href="/" className={styles.logoArea}>
@@ -145,7 +149,7 @@ const Header = () => {
               color: 'white', 
               fontWeight: '800', 
               fontSize: '1.25rem',
-              boxShadow: '0 4px 6px -1px rgba(79, 70, 229, 0.2)'
+              boxShadow: '0 4px 6px -1px rgba(124, 58, 237, 0.2)'
             }}>
               M
             </div>
@@ -204,6 +208,14 @@ const Header = () => {
             </button>
           </div>
         </form>
+
+        {/* E-Commerce Shopping Cart Icon */}
+        <div className={styles.cartIconWrapper} onClick={() => setIsCartOpen(true)}>
+          <span style={{ fontSize: '1.6rem', cursor: 'pointer' }}>🛒</span>
+          {totalCartItems > 0 && (
+            <span className={styles.cartBadge}>{totalCartItems}</span>
+          )}
+        </div>
       </div>
 
       {/* 3. Bottom Row: Category bar */}
@@ -226,6 +238,60 @@ const Header = () => {
           </nav>
         </div>
       </div>
+
+      {/* 4. Sliding Cart Drawer overlay */}
+      {isCartOpen && (
+        <div className={styles.cartOverlay} onClick={() => setIsCartOpen(false)}>
+          <div className={styles.cartDrawer} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.cartHeader}>
+              <h3>Shopping Cart</h3>
+              <button className={styles.closeDrawerBtn} onClick={() => setIsCartOpen(false)}>✕</button>
+            </div>
+            {cart.length === 0 ? (
+              <div className={styles.emptyCart}>
+                <span style={{ fontSize: '3rem' }}>🛒</span>
+                <p style={{ marginTop: '1rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>Your cart is empty.</p>
+                <button className={styles.shopBtn} onClick={() => setIsCartOpen(false)}>Start Shopping</button>
+              </div>
+            ) : (
+              <>
+                <div className={styles.cartItemsList}>
+                  {cart.map((item) => (
+                    <div key={item.id} className={styles.cartDrawerItem}>
+                      <div className={styles.cartItemDetails}>
+                        <span className={styles.cartItemTitle}>{item.title}</span>
+                        <span className={styles.cartItemPrice}>Rs {item.price.toLocaleString()}</span>
+                      </div>
+                      <div className={styles.cartQtyControls}>
+                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                        <span>{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                        <button className={styles.removeBtn} onClick={() => removeFromCart(item.id)}>🗑️</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.cartFooter}>
+                  <div className={styles.cartTotal}>
+                    <span>Total Amount:</span>
+                    <span>Rs {cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}</span>
+                  </div>
+                  <button 
+                    className={styles.checkoutBtn} 
+                    onClick={() => { 
+                      alert('Order placed successfully! Thank you for purchasing.'); 
+                      clearCart(); 
+                      setIsCartOpen(false); 
+                    }}
+                  >
+                    Proceed to Checkout
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 };

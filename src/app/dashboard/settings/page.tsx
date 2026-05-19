@@ -1,7 +1,24 @@
 import React from 'react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { updateProfile } from '@/actions/dashboard';
+import { revalidatePath } from 'next/cache';
 import styles from './page.module.css';
 
-export default function DashboardSettings() {
+export const dynamic = 'force-dynamic';
+
+export default async function DashboardSettings() {
+  const session = await getServerSession(authOptions);
+  
+  async function handleUpdate(formData: FormData) {
+    'use server';
+    await updateProfile(formData);
+    revalidatePath('/dashboard/settings');
+  }
+
+  const user = session?.user as any;
+  const nameParts = user?.name ? user.name.split(' ') : ['User', ''];
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Profile Settings</h1>
@@ -11,7 +28,7 @@ export default function DashboardSettings() {
         <section className={styles.card}>
           <h2>Profile Photo</h2>
           <div className={styles.avatarRow}>
-            <div className={styles.avatar}>JD</div>
+            <div className={styles.avatar}>{user?.name ? user.name.charAt(0) : 'U'}</div>
             <div>
               <button className={styles.uploadBtn}>Upload New Photo</button>
               <p>JPG, PNG or GIF. Max 5MB.</p>
@@ -22,29 +39,27 @@ export default function DashboardSettings() {
         {/* Personal Info */}
         <section className={styles.card}>
           <h2>Personal Information</h2>
-          <div className={styles.formGrid}>
-            <div className={styles.field}>
-              <label>First Name</label>
-              <input type="text" defaultValue="John" />
+          <form action={handleUpdate}>
+            <div className={styles.formGrid}>
+              <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                <label>Full Name</label>
+                <input type="text" name="name" defaultValue={user?.name || ''} required />
+              </div>
+              <div className={styles.field}>
+                <label>Email Address</label>
+                <input type="email" defaultValue={user?.email || ''} readOnly style={{ opacity: 0.7 }} />
+              </div>
+              <div className={styles.field}>
+                <label>Phone Number</label>
+                <input type="tel" defaultValue="+92 300 1234567" />
+              </div>
+              <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                <label>Location / City</label>
+                <input type="text" defaultValue="Islamabad, Pakistan" />
+              </div>
             </div>
-            <div className={styles.field}>
-              <label>Last Name</label>
-              <input type="text" defaultValue="Doe" />
-            </div>
-            <div className={styles.field}>
-              <label>Email Address</label>
-              <input type="email" defaultValue="john@example.com" />
-            </div>
-            <div className={styles.field}>
-              <label>Phone Number</label>
-              <input type="tel" defaultValue="+92 300 1234567" />
-            </div>
-            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
-              <label>Location / City</label>
-              <input type="text" defaultValue="Islamabad, Pakistan" />
-            </div>
-          </div>
-          <button className={styles.saveBtn}>Save Changes</button>
+            <button type="submit" className={styles.saveBtn}>Save Changes</button>
+          </form>
         </section>
 
         {/* Security */}

@@ -1,26 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
 
 :root {
-  /* Premium Branded Colors */
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --primary-light: #eef2ff;
+  /* Midnight Amethyst & Sunset Coral Theme */
+  --primary: #7c3aed; /* Midnight Amethyst Violet */
+  --primary-hover: #6d28d9;
+  --primary-light: #f5f3ff;
   
-  --secondary: #10b981;
-  --secondary-hover: #059669;
+  --secondary: #ff6b6b; /* Sunset Coral */
+  --secondary-hover: #ee5253;
   
-  --accent: #f59e0b; /* Amber accent */
+  --accent: #f59e0b; /* Amber */
   
-  --background: #f8fafc; /* Sleek slate body background */
-  --foreground: #0f172a; /* Slate 900 */
+  --background: #f8fafc; /* Sleek light slate background */
+  --foreground: #0f172a;
   
   --card: #ffffff;
   --card-foreground: #0f172a;
   
-  --border: #e2e8f0;
+  --border: #f1f5f9;
   --input: #ffffff;
   
-  --muted: #f1f5f9;
+  --muted: #f8fafc;
   --muted-foreground: #64748b;
   
   /* Typography */
@@ -31,7 +31,7 @@
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
-  --shadow-premium: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  --shadow-premium: 0 10px 15px -3px rgba(124, 58, 237, 0.1);
   
   /* Transitions */
   --transition: all 0.2s ease-in-out;
