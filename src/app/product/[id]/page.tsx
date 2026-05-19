@@ -4,14 +4,14 @@ import styles from './page.module.css';
 const PRODUCT = {
   id: 1,
   title: 'iPhone 15 Pro Max - 256GB - Blue Titanium',
-  price: '$1,199',
+  price: 'Rs 345,000',
   category: 'Mobiles',
-  location: 'New York, Manhattan',
-  description: 'Selling my iPhone 15 Pro Max in Blue Titanium. It is in perfect condition, literally like new. 256GB storage, battery health at 100%. Comes with original box and cable. Only 2 months old.',
+  location: 'DHA, Karachi',
+  description: 'Selling my iPhone 15 Pro Max in Blue Titanium. It is in perfect condition, literally like new. 256GB storage, battery health at 100%. Comes with original box and cable. PTA approved.',
   condition: 'Like New',
   brand: 'Apple',
   seller: {
-    name: 'John Doe',
+    name: 'Muhammad Yasir',
     memberSince: 'Oct 2021',
     verified: true,
     rating: 4.8,

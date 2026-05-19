@@ -6,12 +6,12 @@ import styles from './page.module.css';
 export const dynamic = 'force-dynamic';
 
 const MOCK_ADS = [
-  { id: '1', title: 'iPhone 15 Pro Max - 256GB', price: 1199, category: 'Mobiles', location: 'New York', images: ['/phone-1.jpg'] },
-  { id: '2', title: 'Gaming Laptop - RTX 4080', price: 2450, category: 'Electronics', location: 'Chicago', images: ['/laptop-1.jpg'] },
-  { id: '3', title: 'BMW M4 Competition 2023', price: 78500, category: 'Cars', location: 'Los Angeles', images: ['/car-1.jpg'] },
-  { id: '4', title: 'Cozy Studio Apartment', price: 1800, category: 'Property', location: 'Miami', images: ['/property-1.jpg'] },
-  { id: '5', title: 'Mountain Bike - Trek Fuel', price: 3200, category: 'Bikes', location: 'Denver', images: ['/bike-1.jpg'] },
-  { id: '6', title: 'Designer Sofa Set', price: 950, category: 'Furniture', location: 'Austin', images: ['/furniture-1.jpg'] },
+  { id: '1', title: 'iPhone 15 Pro Max - 256GB Dual Sim PTA Approved', price: 345000, category: 'Mobiles', location: 'DHA, Karachi', images: ['/phone-1.jpg'] },
+  { id: '2', title: 'Gaming Laptop - RTX 4080 Core i9 16GB', price: 285000, category: 'Electronics', location: 'Gulberg, Lahore', images: ['/laptop-1.jpg'] },
+  { id: '3', title: 'BMW M4 Competition Coupe 2023', price: 38500000, category: 'Cars', location: 'G-11, Islamabad', images: ['/car-1.jpg'] },
+  { id: '4', title: 'Cozy 2 Bed Apartment DHA Phase 6', price: 18500000, category: 'Property', location: 'DHA Phase 6, Lahore', images: ['/property-1.jpg'] },
+  { id: '5', title: 'Mountain Bike - Trek Fuel EX 8', price: 145000, category: 'Bikes', location: 'Johar Town, Lahore', images: ['/bike-1.jpg'] },
+  { id: '6', title: 'Designer Velvet Sofa Set 7 Seater', price: 75000, category: 'Furniture', location: 'Clifton, Karachi', images: ['/furniture-1.jpg'] },
 ];
 
 export default async function BrowsePage({
@@ -100,7 +100,7 @@ export default async function BrowsePage({
               <div className={styles.adInfo}>
                 <span className={styles.adCategory}>{ad.category}</span>
                 <span className={styles.adTitle}>{ad.title}</span>
-                <span className={styles.adPrice}>${ad.price.toLocaleString()}</span>
+                <span className={styles.adPrice}>Rs {ad.price.toLocaleString()}</span>
                 <div style={{ marginTop: '1rem', color: 'var(--muted-foreground)', fontSize: '0.85rem' }}>
                   📍 {ad.location}
                 </div>
