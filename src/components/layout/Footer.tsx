@@ -66,16 +66,16 @@ const Footer = () => {
           <div className={styles.linkColumn}>
             <h4>About Us</h4>
             <div className={styles.linkColumnList}>
-              <Link href="/about">About OLX Group</Link>
-              <Link href="/blog">OLX Blog</Link>
+              <Link href="/about">About Marketplace</Link>
+              <Link href="/blog">Marketplace Blog</Link>
               <Link href="/contact">Contact Us</Link>
-              <Link href="/pricing">OLX for Businesses</Link>
+              <Link href="/pricing">Marketplace for Businesses</Link>
             </div>
           </div>
 
-          {/* OLX */}
+          {/* Support */}
           <div className={styles.linkColumn}>
-            <h4>OLX</h4>
+            <h4>Support</h4>
             <div className={styles.linkColumnList}>
               <Link href="/safety">Help & Safety</Link>
               <Link href="/safety">Sitemap</Link>
@@ -90,7 +90,7 @@ const Footer = () => {
       <div className={styles.bottomBar}>
         <div className={styles.bottomContainer}>
           <div className={styles.bottomLeft}>
-            <span>Free Classifieds in Pakistan</span> &copy; 2006-{currentYear} OLX
+            <span>Free Classifieds in Pakistan</span> &copy; {currentYear} Marketplace Platform. All rights reserved.
           </div>
           <div className={styles.bottomRight}>
             <Link href="/safety" className={styles.bottomLink}>Terms of Use</Link>

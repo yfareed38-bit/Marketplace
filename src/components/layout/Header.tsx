@@ -94,19 +94,14 @@ const Header = () => {
       <div className={styles.topBar}>
         <div className={styles.topBarContainer}>
           <div className={styles.topLinks}>
-            <Link href="/" className={styles.topLink}>
-              {/* Simple OLX logo icon */}
-              <svg width="22" height="15" viewBox="0 0 48 26" fill="currentColor">
-                <path d="M12.92 12.92C12.92 20.06 7.14 25.85 0 25.85h12.92V12.92z" fill="#3a77ff"/>
-                <path d="M35.08 12.92C35.08 5.79 40.86 0 48 0H35.08v12.92z" fill="#3a77ff"/>
-                <circle cx="24" cy="13" r="8" fill="#3a77ff"/>
-              </svg>
+            <Link href="/" className={styles.topLink} style={{ color: 'var(--primary)', fontWeight: 700, gap: '0.25rem' }}>
+              <span>🛍️</span> MarketX
             </Link>
             <Link href="/browse?category=Cars" className={styles.topLink}>
-              <span style={{ fontSize: '1rem' }}>🚗</span> Motors
+              <span>🚗</span> Motors
             </Link>
             <Link href="/browse?category=Property" className={styles.topLink}>
-              <span style={{ fontSize: '1.1rem' }}>🏢</span> Property
+              <span>🏢</span> Property
             </Link>
           </div>
           
@@ -134,14 +129,29 @@ const Header = () => {
         </div>
       </div>
 
-      {/* 2. Main Nav Row: Logo, Location Box, Search Bar */}
+      {/* 2. Main Nav Row: Brand Logo, Location Box, Search Bar */}
       <div className={styles.mainNavRow}>
-        {/* OLX Styled Letters Logo */}
+        {/* Custom Premium Brand Logo */}
         <Link href="/" className={styles.logoArea}>
-          <div style={{ display: 'flex', alignItems: 'center', fontWeight: '900', fontSize: '2.2rem', letterSpacing: '-1px', fontFamily: 'sans-serif' }}>
-            <span style={{ color: '#3a77ff' }}>o</span>
-            <span style={{ color: '#002f34', marginLeft: '1px' }}>l</span>
-            <span style={{ color: '#23e5db', marginLeft: '1.5px' }}>x</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ 
+              width: '38px', 
+              height: '38px', 
+              borderRadius: '10px', 
+              background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              color: 'white', 
+              fontWeight: '800', 
+              fontSize: '1.25rem',
+              boxShadow: '0 4px 6px -1px rgba(79, 70, 229, 0.2)'
+            }}>
+              M
+            </div>
+            <span style={{ fontWeight: '800', fontSize: '1.45rem', color: 'var(--foreground)', letterSpacing: '-0.5px' }}>
+              Market<span style={{ color: 'var(--primary)' }}>place</span>
+            </span>
           </div>
         </Link>
 

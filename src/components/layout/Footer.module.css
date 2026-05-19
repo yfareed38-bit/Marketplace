@@ -1,15 +1,15 @@
 /* Main Footer Wrapper */
 .footerSection {
-  background-color: #f7f8f9;
-  border-top: 1px solid #e6ebec;
-  margin-top: 4rem;
+  background-color: #f8fafc;
+  border-top: 1px solid var(--border);
+  margin-top: 5rem;
 }
 
 /* App Promo Banner */
 .appPromoBanner {
-  background-color: rgba(0, 47, 52, 0.03);
-  border-bottom: 1px solid #e6ebec;
-  padding: 2rem 1rem;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.03) 0%, rgba(16, 185, 129, 0.03) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 2.5rem 1rem;
 }
 
 .promoContainer {
@@ -30,18 +30,20 @@
 .phoneMockup {
   font-size: 5rem;
   line-height: 1;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
 }
 
 .promoText h2 {
   font-size: 1.75rem;
-  color: var(--primary);
-  font-weight: 700;
+  color: var(--foreground);
+  font-weight: 800;
   margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
 }
 
 .promoText p {
   color: var(--muted-foreground);
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .promoRight {
@@ -55,6 +57,7 @@
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--foreground);
+  letter-spacing: 0.05em;
 }
 
 .appBadges {
@@ -63,29 +66,35 @@
 }
 
 .appBadge {
-  background-color: #000;
+  background-color: #0f172a;
   color: white;
-  border-radius: 4px;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.7rem;
+  border-radius: 6px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.75rem;
   font-weight: 700;
   display: flex;
   flex-direction: column;
   line-height: 1.2;
   cursor: pointer;
-  border: 1px solid #333;
+  border: 1px solid #1e293b;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.appBadge:hover {
+  transform: translateY(-1px);
+  background-color: #1e293b;
 }
 
 .appBadge span {
   font-size: 0.55rem;
   font-weight: 400;
-  color: #a0aec0;
+  color: #94a3b8;
 }
 
-/* Main Link Columns */
+/* Main Link Columns (Premium Dark Slate Layout) */
 .linksGridSection {
-  background-color: #e6ebec;
-  padding: 3rem 1rem;
+  background-color: #0f172a;
+  padding: 4rem 1rem;
 }
 
 .linksGridContainer {
@@ -93,36 +102,38 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
+  gap: 2.5rem;
 }
 
 .linkColumn h4 {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--foreground);
+  color: #ffffff;
   text-transform: uppercase;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
 }
 
 .linkColumnList {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.65rem;
 }
 
 .linkColumnList a {
-  font-size: 0.75rem;
-  color: #5a7378;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  transition: color 0.15s ease;
 }
 
 .linkColumnList a:hover {
-  color: var(--foreground);
+  color: #ffffff;
 }
 
 /* Bottom Bar */
 .bottomBar {
-  background-color: var(--primary);
-  color: white;
+  background-color: #0b0f19;
+  color: #64748b;
   padding: 1.5rem 1rem;
 }
 
@@ -133,8 +144,11 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.75rem;
-  font-weight: 400;
-  color: #a0aec0;
+}
+
+.bottomLeft span {
+  font-weight: 600;
+  color: #94a3b8;
 }
 
 .bottomRight {
@@ -142,8 +156,13 @@
   gap: 1.5rem;
 }
 
+.bottomLink {
+  color: #64748b;
+  transition: color 0.15s ease;
+}
+
 .bottomLink:hover {
-  color: white;
+  color: #ffffff;
 }
 
 /* Responsive layout adjustments */

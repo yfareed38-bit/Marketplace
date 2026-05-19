@@ -1,27 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
 
 :root {
-  /* OLX Pakistan Colors */
-  --primary: #002f34;
-  --primary-hover: #001f22;
-  --primary-light: #e6ebec;
+  /* Premium Branded Colors */
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #eef2ff;
   
-  --secondary: #3a77ff;
-  --secondary-hover: #2a61d8;
+  --secondary: #10b981;
+  --secondary-hover: #059669;
   
-  --accent: #f7cb15; /* Yellow accent */
+  --accent: #f59e0b; /* Amber accent */
   
-  --background: #f7f8f9; /* Light background typical of OLX */
-  --foreground: #002f34;
+  --background: #f8fafc; /* Sleek slate body background */
+  --foreground: #0f172a; /* Slate 900 */
   
   --card: #ffffff;
-  --card-foreground: #002f34;
+  --card-foreground: #0f172a;
   
-  --border: #e6ebec;
+  --border: #e2e8f0;
   --input: #ffffff;
   
-  --muted: #f2f4f5;
-  --muted-foreground: #5a7378;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
   
   /* Typography */
   --font-sans: 'Roboto', 'Inter', system-ui, -apple-system, sans-serif;
