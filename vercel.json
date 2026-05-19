@@ -1,9 +1,0 @@
-{
-  "build": {
-    "env": {
-      "DATABASE_URL": "postgres://USER:PASSWORD@HOST:PORT/DATABASE?sslmode=require",
-      "NEXTAUTH_URL": "https://your-app.vercel.app",
-      "NEXTAUTH_SECRET": "YOUR_RANDOM_64_CHAR_HEX_STRING"
-    }
-  }
-}
