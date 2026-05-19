@@ -51,3 +51,93 @@ export async function createListing(formData: FormData) {
     return { success: false, error: 'Failed to create listing' };
   }
 }
+
+export async function getListingById(id: string) {
+  try {
+    const { prisma } = await import('@/lib/prisma');
+    const listing = await (prisma as any).listing.findUnique({
+      where: { id },
+      include: {
+        seller: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            createdAt: true,
+            role: true,
+            _count: { select: { listings: true } },
+          }
+        }
+      }
+    });
+    
+    if (!listing) return { success: false, error: 'Listing not found' };
+    return { success: true, data: listing };
+  } catch (error) {
+    console.error('Failed to fetch listing:', error);
+    return { success: false, error: 'Failed to fetch listing' };
+  }
+}
+
+export async function getDynamicCategories() {
+  try {
+    const { prisma } = await import('@/lib/prisma');
+    // Fetch unique categories currently in use
+    const distinctCategories = await (prisma as any).listing.findMany({
+      where: { status: 'ACTIVE' },
+      distinct: ['category'],
+      select: { category: true }
+    });
+    
+    const categories = distinctCategories.map((c: any) => c.category);
+    return { success: true, data: categories };
+  } catch (error) {
+    console.error('Failed to fetch categories:', error);
+    return { success: false, error: 'Failed to fetch categories', data: [] };
+  }
+}
+
+export async function createReview(formData: FormData) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return { success: false, error: 'Unauthorized' };
+    }
+
+    const rating = parseInt(formData.get('rating') as string);
+    const comment = formData.get('comment') as string;
+    const revieweeId = formData.get('revieweeId') as string;
+
+    const { prisma } = await import('@/lib/prisma');
+    const review = await (prisma as any).review.create({
+      data: {
+        rating,
+        comment,
+        reviewerId: (session.user as any).id,
+        revieweeId
+      }
+    });
+
+    return { success: true, data: review };
+  } catch (error) {
+    console.error('Failed to create review:', error);
+    return { success: false, error: 'Failed to create review' };
+  }
+}
+
+export async function getReviewsByUserId(userId: string) {
+  try {
+    const { prisma } = await import('@/lib/prisma');
+    const reviews = await (prisma as any).review.findMany({
+      where: { revieweeId: userId },
+      include: {
+        reviewer: { select: { name: true } }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    return { success: true, data: reviews };
+  } catch (error) {
+    console.error('Failed to fetch reviews:', error);
+    return { success: false, error: 'Failed to fetch reviews', data: [] };
+  }
+}

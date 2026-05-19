@@ -106,3 +106,41 @@ export async function getAllUsers() {
     return { success: false, error: error.message || 'Failed to fetch users' };
   }
 }
+
+export async function rejectListing(id: string) {
+  try {
+    await verifyAdmin();
+    const { prisma } = await import('@/lib/prisma');
+    
+    // We can either delete it or set status to REJECTED.
+    // Given the schema doesn't have REJECTED explicitly defined as standard, we will delete it.
+    await (prisma as any).listing.delete({
+      where: { id }
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.error('Failed to reject listing:', error);
+    return { success: false, error: error.message || 'Failed to reject listing' };
+  }
+}
+
+export async function getSoldListings() {
+  try {
+    await verifyAdmin();
+    const { prisma } = await import('@/lib/prisma');
+    
+    const listings = await (prisma as any).listing.findMany({
+      where: { status: 'SOLD' },
+      include: {
+        seller: { select: { name: true } },
+      },
+      orderBy: { updatedAt: 'desc' },
+    });
+
+    return { success: true, data: listings };
+  } catch (error: any) {
+    console.error('Failed to fetch sold listings:', error);
+    return { success: false, error: error.message || 'Failed to fetch sold listings' };
+  }
+}

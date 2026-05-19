@@ -1,31 +1,23 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
+import { getListingById, getReviewsByUserId, createReview } from '@/actions/listings';
+import { notFound } from 'next/navigation';
 import styles from './page.module.css';
 
-const PRODUCT = {
-  id: '1',
-  title: 'iPhone 15 Pro Max - 256GB - Blue Titanium',
-  price: 345000,
-  category: 'Mobiles',
-  location: 'DHA, Karachi',
-  description: 'Selling my iPhone 15 Pro Max in Blue Titanium. It is in perfect condition, literally like new. 256GB storage, battery health at 100%. Comes with original box and cable. PTA approved.',
-  condition: 'Like New',
-  brand: 'Apple',
-  seller: {
-    name: 'Muhammad Yasir',
-    memberSince: 'Oct 2021',
-    verified: true,
-    rating: 4.8,
-    totalAds: 12,
-  },
-};
-
-const INITIAL_REVIEWS = [
-  { id: 1, author: 'Kamran Khan', rating: 5, comment: 'Product is exactly as described. Seller was very cooperative and quick to respond.', date: '3 days ago' },
-  { id: 2, author: 'Sarah Ahmed', rating: 4, comment: 'Perfect condition, original accessories included. Highly recommended!', date: '1 week ago' },
-];
+function getCategoryIcon(cat: string) {
+  const lowerCat = cat.toLowerCase();
+  if (lowerCat.includes('mobile') || lowerCat.includes('phone')) return '📱';
+  if (lowerCat.includes('car') || lowerCat.includes('vehicle')) return '🚗';
+  if (lowerCat.includes('property') || lowerCat.includes('real estate')) return '🏠';
+  if (lowerCat.includes('electronic')) return '📺';
+  if (lowerCat.includes('bike') || lowerCat.includes('motorcycle')) return '🏍️';
+  if (lowerCat.includes('service')) return '🛠️';
+  if (lowerCat.includes('job')) return '💼';
+  if (lowerCat.includes('furniture')) return '🛋️';
+  return '📦';
+}
 
 export default function ProductDetails({
   params,
@@ -35,34 +27,63 @@ export default function ProductDetails({
   const { id } = React.use(params);
   const { addToCart, setIsCartOpen } = useCart();
   
-  const [reviews, setReviews] = useState(INITIAL_REVIEWS);
-  const [newAuthor, setNewAuthor] = useState('');
+  const [product, setProduct] = useState<any>(null);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  
   const [newRating, setNewRating] = useState(5);
   const [newComment, setNewComment] = useState('');
   const [showPhone, setShowPhone] = useState(false);
 
+  useEffect(() => {
+    async function loadData() {
+      const prodRes = await getListingById(id);
+      if (!prodRes.success || !prodRes.data) {
+        notFound();
+        return;
+      }
+      setProduct(prodRes.data);
+      
+      const revRes = await getReviewsByUserId(prodRes.data.sellerId);
+      if (revRes.success && revRes.data) {
+        setReviews(revRes.data);
+      }
+      setLoading(false);
+    }
+    loadData();
+  }, [id]);
+
   const handleBuyNow = () => {
-    addToCart({ id: PRODUCT.id, title: PRODUCT.title, price: PRODUCT.price });
+    if (!product) return;
+    addToCart({ id: product.id, title: product.title, price: product.price });
     setIsCartOpen(true);
   };
 
-  const handleAddReview = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newAuthor || !newComment) return;
+  const handleAddReview = async (formData: FormData) => {
+    if (!product) return;
+    formData.append('revieweeId', product.sellerId);
     
-    const reviewObj = {
-      id: Date.now(),
-      author: newAuthor,
-      rating: newRating,
-      comment: newComment,
-      date: 'Just now',
-    };
-    
-    setReviews([reviewObj, ...reviews]);
-    setNewAuthor('');
-    setNewComment('');
-    setNewRating(5);
+    const res = await createReview(formData);
+    if (res.success && res.data) {
+      setReviews([{
+        id: res.data.id,
+        rating: res.data.rating,
+        comment: res.data.comment,
+        createdAt: res.data.createdAt,
+        reviewer: { name: 'You' } // Optimistic
+      }, ...reviews]);
+      setNewComment('');
+      setNewRating(5);
+    } else {
+      alert('Failed to submit review. Make sure you are logged in.');
+    }
   };
+
+  if (loading) {
+    return <div style={{ padding: '5rem', textAlign: 'center' }}>Loading product details...</div>;
+  }
+
+  if (!product) return null;
 
   return (
     <div className={styles.container}>
@@ -70,13 +91,12 @@ export default function ProductDetails({
         {/* Gallery */}
         <div className={styles.gallery}>
           <div className={styles.mainImage}>
-            <div className={styles.imageOverlayIcon}>📱</div>
+            <div className={styles.imageOverlayIcon}>{getCategoryIcon(product.category)}</div>
           </div>
           <div className={styles.thumbnails}>
-            <div className={`${styles.thumb} ${styles.thumbActive}`}>📱</div>
-            <div className={styles.thumb}>🔌</div>
+            <div className={`${styles.thumb} ${styles.thumbActive}`}>{getCategoryIcon(product.category)}</div>
+            <div className={styles.thumb}>🔍</div>
             <div className={styles.thumb}>📦</div>
-            <div className={styles.thumb}>📄</div>
           </div>
         </div>
 
@@ -84,22 +104,18 @@ export default function ProductDetails({
         <div className={styles.productInfo} style={{ marginTop: '2rem' }}>
           <div className={styles.description}>
             <h3>Description</h3>
-            <p>{PRODUCT.description}</p>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{product.description}</p>
           </div>
           <div style={{ marginTop: '3rem' }}>
             <h4 style={{ marginBottom: '1.5rem', fontSize: '1.1rem' }}>Details</h4>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <li style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 0', borderBottom: '1px solid var(--border)' }}>
-                <span style={{ color: 'var(--muted-foreground)' }}>Brand</span>
-                <span style={{ fontWeight: '600' }}>{PRODUCT.brand}</span>
-              </li>
-              <li style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 0', borderBottom: '1px solid var(--border)' }}>
                 <span style={{ color: 'var(--muted-foreground)' }}>Condition</span>
-                <span style={{ fontWeight: '600' }}>{PRODUCT.condition}</span>
+                <span style={{ fontWeight: '600' }}>{product.condition}</span>
               </li>
               <li style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 0' }}>
                 <span style={{ color: 'var(--muted-foreground)' }}>Ad ID</span>
-                <span style={{ fontWeight: '600' }}>#{id}</span>
+                <span style={{ fontWeight: '600' }}>#{product.id.substring(0, 8)}</span>
               </li>
             </ul>
           </div>
@@ -109,38 +125,41 @@ export default function ProductDetails({
         <div className={styles.reviewsContainer} style={{ marginTop: '2rem' }}>
           <h3>Ratings & Reviews</h3>
           <div className={styles.ratingsSummaryRow}>
-            <div className={styles.ratingBigNumber}>4.8</div>
+            <div className={styles.ratingBigNumber}>
+              {reviews.length > 0 
+                ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) 
+                : '0.0'}
+            </div>
             <div className={styles.ratingStarsArea}>
-              <div style={{ color: '#f59e0b', fontSize: '1.25rem' }}>⭐⭐⭐⭐⭐</div>
+              <div style={{ color: '#f59e0b', fontSize: '1.25rem' }}>
+                {'⭐'.repeat(Math.round(reviews.length > 0 ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length) : 0))}
+              </div>
               <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', marginTop: '0.25rem' }}>Based on {reviews.length} reviews</p>
             </div>
           </div>
 
           <div className={styles.reviewsList}>
-            {reviews.map((rev) => (
-              <div key={rev.id} className={styles.reviewCard}>
-                <div className={styles.reviewHeader}>
-                  <span className={styles.reviewAuthor}>{rev.author}</span>
-                  <span className={styles.reviewStars}>{'⭐'.repeat(rev.rating)}</span>
+            {reviews.length === 0 ? (
+              <p style={{ color: 'var(--muted-foreground)', fontStyle: 'italic' }}>No reviews yet for this seller.</p>
+            ) : (
+              reviews.map((rev: any) => (
+                <div key={rev.id} className={styles.reviewCard}>
+                  <div className={styles.reviewHeader}>
+                    <span className={styles.reviewAuthor}>{rev.reviewer?.name || 'Anonymous'}</span>
+                    <span className={styles.reviewStars}>{'⭐'.repeat(rev.rating)}</span>
+                  </div>
+                  <p className={styles.reviewComment}>{rev.comment}</p>
+                  <span className={styles.reviewDate}>{new Date(rev.createdAt).toLocaleDateString()}</span>
                 </div>
-                <p className={styles.reviewComment}>{rev.comment}</p>
-                <span className={styles.reviewDate}>{rev.date}</span>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
           {/* Add Review Form */}
-          <form onSubmit={handleAddReview} className={styles.reviewForm}>
+          <form action={handleAddReview} className={styles.reviewForm}>
             <h4>Write a Customer Review</h4>
             <div className={styles.formRow}>
-              <input 
-                type="text" 
-                placeholder="Your Name" 
-                value={newAuthor} 
-                onChange={(e) => setNewAuthor(e.target.value)} 
-                required 
-              />
-              <select value={newRating} onChange={(e) => setNewRating(Number(e.target.value))}>
+              <select name="rating" value={newRating} onChange={(e) => setNewRating(Number(e.target.value))}>
                 <option value={5}>5 Stars (Excellent)</option>
                 <option value={4}>4 Stars (Good)</option>
                 <option value={3}>3 Stars (Average)</option>
@@ -149,6 +168,7 @@ export default function ProductDetails({
               </select>
             </div>
             <textarea 
+              name="comment"
               placeholder="Share your experience with this seller or product..." 
               value={newComment} 
               onChange={(e) => setNewComment(e.target.value)} 
@@ -164,13 +184,13 @@ export default function ProductDetails({
         {/* Price & Header Block */}
         <div className={styles.productInfo}>
           <div className={styles.header}>
-            <span className={styles.category}>{PRODUCT.category}</span>
-            <h1 className={styles.title}>{PRODUCT.title}</h1>
-            <div className={styles.price}>Rs {PRODUCT.price.toLocaleString()}</div>
+            <span className={styles.category}>{product.category}</span>
+            <h1 className={styles.title}>{product.title}</h1>
+            <div className={styles.price}>Rs {product.price.toLocaleString()}</div>
           </div>
           <div style={{ color: 'var(--muted-foreground)', fontSize: '0.9rem', display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-            <span>📍 {PRODUCT.location}</span>
-            <span>🕒 2 hours ago</span>
+            <span>📍 {product.location}</span>
+            <span>🕒 {new Date(product.createdAt).toLocaleDateString()}</span>
           </div>
 
           {/* E-Commerce Direct checkout actions (Daraz style) */}
@@ -178,7 +198,7 @@ export default function ProductDetails({
             <button className={styles.buyNowBtn} onClick={handleBuyNow}>Buy Now</button>
             <button 
               className={styles.addCartBtn} 
-              onClick={() => addToCart({ id: PRODUCT.id, title: PRODUCT.title, price: PRODUCT.price })}
+              onClick={() => addToCart({ id: product.id, title: product.title, price: product.price })}
             >
               Add to Cart
             </button>
@@ -188,11 +208,11 @@ export default function ProductDetails({
         {/* Classified Chat & WhatsApp options (OLX style) */}
         <div className={styles.sellerCard}>
           <div className={styles.sellerProfile}>
-            <div className={styles.avatar}>{PRODUCT.seller.name.charAt(0)}</div>
+            <div className={styles.avatar}>{product.seller?.name?.charAt(0) || 'U'}</div>
             <div className={styles.sellerInfo}>
-              <h4>{PRODUCT.seller.name} {PRODUCT.seller.verified && '✅'}</h4>
-              <p>Member since {PRODUCT.seller.memberSince}</p>
-              <p>⭐ {PRODUCT.seller.rating} · {PRODUCT.seller.totalAds} ads</p>
+              <h4>{product.seller?.name || 'Unknown Seller'} {product.seller?.role === 'ADMIN' && '✅'}</h4>
+              <p>Member since {new Date(product.seller?.createdAt).toLocaleDateString(undefined, {month: 'short', year: 'numeric'})}</p>
+              <p>⭐ {reviews.length > 0 ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) : 'New'} · {product.seller?._count?.listings || 0} ads</p>
             </div>
           </div>
           <div className={styles.actions}>
@@ -213,7 +233,7 @@ export default function ProductDetails({
 
         <div className={styles.locationMap}>
           <h4 style={{ marginBottom: '1.5rem' }}>Location</h4>
-          <div className={styles.mapPlaceholder}>🗺️ {PRODUCT.location}</div>
+          <div className={styles.mapPlaceholder}>🗺️ {product.location}</div>
         </div>
 
         <div style={{ textAlign: 'center' }}>

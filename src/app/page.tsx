@@ -1,121 +1,37 @@
 import React from 'react';
 import Link from 'next/link';
-import { getListings } from '@/actions/listings';
+import { getListings, getDynamicCategories } from '@/actions/listings';
 import FlashSaleSection from '@/components/home/FlashSaleSection';
 import styles from './page.module.css';
 
 export const dynamic = 'force-dynamic';
 
-const CATEGORIES = [
-  { id: 'Mobiles', name: 'Mobiles', icon: '📱' },
-  { id: 'Cars', name: 'Vehicles', icon: '🚗' },
-  { id: 'Property', name: 'Property For Sale', icon: '🏠' },
-  { id: 'Property', name: 'Property For Rent', icon: '🔑' },
-  { id: 'Electronics', name: 'Electronics & Home...', icon: '📺' },
-  { id: 'Bikes', name: 'Bikes', icon: '🏍️' },
-  { id: 'Electronics', name: 'Business, Industrial', icon: '🚜' },
-  { id: 'Services', name: 'Services', icon: '🛠️' },
-  { id: 'Jobs', name: 'Jobs', icon: '💼' },
-];
-
-const MOCK_ADS = [
-  // Mobiles
-  {
-    id: 'm1',
-    title: 'iPhone 15 Pro Max - 256GB Dual Sim PTA Approved',
-    price: 345000,
-    category: 'Mobiles',
-    location: 'DHA, Karachi',
-    createdAt: '2 hours ago',
-    featured: true,
-    icon: '📱'
-  },
-  {
-    id: 'm2',
-    title: 'Samsung Galaxy S24 Ultra - 12GB RAM 512GB',
-    price: 310000,
-    category: 'Mobiles',
-    location: 'Gulberg, Lahore',
-    createdAt: '5 hours ago',
-    featured: false,
-    icon: '📱'
-  },
-  // Cars
-  {
-    id: 'c1',
-    title: 'Honda Civic Oriel 2022 - First Owner Mint Condition',
-    price: 6850000,
-    category: 'Cars',
-    location: 'G-11, Islamabad',
-    createdAt: '1 day ago',
-    featured: true,
-    icon: '🚗'
-  },
-  {
-    id: 'c2',
-    title: 'Toyota Corolla Altis Grande 1.8 CVT 2021',
-    price: 5900000,
-    category: 'Cars',
-    location: 'Clifton, Karachi',
-    createdAt: '3 days ago',
-    featured: false,
-    icon: '🚗'
-  },
-  // Bikes
-  {
-    id: 'b1',
-    title: 'Suzuki GS 150 Special Edition 2023 model',
-    price: 385000,
-    category: 'Bikes',
-    location: 'Johar Town, Lahore',
-    createdAt: '4 hours ago',
-    featured: true,
-    icon: '🏍️'
-  },
-  {
-    id: 'b2',
-    title: 'Honda CG 125 Self Start 2024 Brand New',
-    price: 282000,
-    category: 'Bikes',
-    location: 'Saddar, Rawalpindi',
-    createdAt: '12 hours ago',
-    featured: false,
-    icon: '🏍️'
-  },
-  // Property
-  {
-    id: 'p1',
-    title: '5 Marla Luxury Brand New House For Sale',
-    price: 18500000,
-    category: 'Property',
-    location: 'DHA Phase 6, Lahore',
-    createdAt: '2 days ago',
-    featured: true,
-    icon: '🏠'
-  },
-  {
-    id: 'p2',
-    title: '2 Bed Apartment in Centaurus Residencia',
-    price: 45000000,
-    category: 'Property',
-    location: 'F-8, Islamabad',
-    createdAt: '1 week ago',
-    featured: false,
-    icon: '🏠'
-  }
-];
+function getCategoryIcon(cat: string) {
+  const lowerCat = cat.toLowerCase();
+  if (lowerCat.includes('mobile') || lowerCat.includes('phone')) return '📱';
+  if (lowerCat.includes('car') || lowerCat.includes('vehicle')) return '🚗';
+  if (lowerCat.includes('property') || lowerCat.includes('real estate')) return '🏠';
+  if (lowerCat.includes('electronic')) return '📺';
+  if (lowerCat.includes('bike') || lowerCat.includes('motorcycle')) return '🏍️';
+  if (lowerCat.includes('service')) return '🛠️';
+  if (lowerCat.includes('job')) return '💼';
+  if (lowerCat.includes('furniture')) return '🛋️';
+  return '📦';
+}
 
 export default async function Home() {
-  const result = await getListings();
-  let liveAds = result.success && result.data ? result.data : [];
-  
-  // Format listings to display. If live DB is empty, use mock ads.
-  const adsToDisplay = liveAds.length > 0 ? liveAds : MOCK_ADS;
+  const [adsRes, catsRes] = await Promise.all([
+    getListings(),
+    getDynamicCategories()
+  ]);
+
+  const liveAds = adsRes.success && adsRes.data ? adsRes.data : [];
+  const dynamicCats = catsRes.success && catsRes.data ? catsRes.data : [];
 
   // Filter listings by category for rows
-  const mobileAds = adsToDisplay.filter((ad: any) => ad.category.toLowerCase() === 'mobiles').slice(0, 4);
-  const carAds = adsToDisplay.filter((ad: any) => ad.category.toLowerCase() === 'cars').slice(0, 4);
-  const generalRecommendations = adsToDisplay.slice(0, 8);
+  const mobileAds = liveAds.filter((ad: any) => ad.category.toLowerCase().includes('mobile')).slice(0, 4);
+  const carAds = liveAds.filter((ad: any) => ad.category.toLowerCase().includes('car') || ad.category.toLowerCase().includes('vehicle')).slice(0, 4);
+  const generalRecommendations = liveAds.slice(0, 8);
 
   return (
     <div className={styles.main}>
@@ -140,14 +56,18 @@ export default async function Home() {
           <span>All Categories</span>
         </div>
         <div className={styles.categoriesGrid}>
-          {CATEGORIES.map((cat, index) => (
-            <Link key={index} href={`/browse?category=${cat.id}`} className={styles.categoryCard}>
-              <div className={styles.categoryIconWrapper}>
-                {cat.icon}
-              </div>
-              <span className={styles.categoryName}>{cat.name}</span>
-            </Link>
-          ))}
+          {dynamicCats.length === 0 ? (
+            <p style={{ color: 'var(--muted-foreground)' }}>No categories found. Be the first to post an ad!</p>
+          ) : (
+            dynamicCats.map((cat: string, index: number) => (
+              <Link key={index} href={`/browse?category=${encodeURIComponent(cat)}`} className={styles.categoryCard}>
+                <div className={styles.categoryIconWrapper}>
+                  {getCategoryIcon(cat)}
+                </div>
+                <span className={styles.categoryName}>{cat}</span>
+              </Link>
+            ))
+          )}
         </div>
       </section>
 
@@ -166,7 +86,7 @@ export default async function Home() {
                 <div className={styles.adImageContainer}>
                   {ad.featured && <span className={styles.featuredBadge}>FEATURED</span>}
                   <button className={styles.favoriteBtn}>♡</button>
-                  <span>{ad.icon || '📱'}</span>
+                  <span>{getCategoryIcon(ad.category)}</span>
                 </div>
                 <div className={styles.adDetails}>
                   <div className={styles.adPrice}>Rs {ad.price.toLocaleString()}</div>
@@ -197,7 +117,7 @@ export default async function Home() {
                 <div className={styles.adImageContainer}>
                   {ad.featured && <span className={styles.featuredBadge}>FEATURED</span>}
                   <button className={styles.favoriteBtn}>♡</button>
-                  <span>{ad.icon || '🚗'}</span>
+                  <span>{getCategoryIcon(ad.category)}</span>
                 </div>
                 <div className={styles.adDetails}>
                   <div className={styles.adPrice}>Rs {ad.price.toLocaleString()}</div>
@@ -218,25 +138,33 @@ export default async function Home() {
         <div className={styles.sectionTitle}>
           <span>Fresh Recommendations</span>
         </div>
-        <div className={styles.listingsGrid}>
-          {generalRecommendations.map((ad: any) => (
-            <Link key={ad.id} href={`/product/${ad.id}`} className={styles.adCard}>
-              <div className={styles.adImageContainer}>
-                {ad.featured && <span className={styles.featuredBadge}>FEATURED</span>}
-                <button className={styles.favoriteBtn}>♡</button>
-                <span>{ad.icon || (ad.category === 'Mobiles' ? '📱' : ad.category === 'Cars' ? '🚗' : ad.category === 'Bikes' ? '🏍️' : '🏠')}</span>
-              </div>
-              <div className={styles.adDetails}>
-                <div className={styles.adPrice}>Rs {ad.price.toLocaleString()}</div>
-                <div className={styles.adTitle}>{ad.title}</div>
-                <div className={styles.adFooter}>
-                  <span>{ad.location}</span>
-                  <span>{ad.createdAt ? (typeof ad.createdAt === 'string' ? ad.createdAt : new Date(ad.createdAt).toLocaleDateString()) : 'Just now'}</span>
+        {generalRecommendations.length === 0 ? (
+          <div style={{ padding: '3rem', textAlign: 'center', background: 'var(--card)', borderRadius: '1rem', border: '1px dashed var(--border)' }}>
+            <h3>No Ads Yet</h3>
+            <p style={{ color: 'var(--muted-foreground)', marginTop: '0.5rem' }}>Be the first one to post an ad on our new marketplace!</p>
+            <Link href="/post-ad" style={{ display: 'inline-block', marginTop: '1rem', padding: '0.75rem 1.5rem', background: 'var(--primary)', color: 'white', borderRadius: '0.5rem', textDecoration: 'none' }}>Post Ad</Link>
+          </div>
+        ) : (
+          <div className={styles.listingsGrid}>
+            {generalRecommendations.map((ad: any) => (
+              <Link key={ad.id} href={`/product/${ad.id}`} className={styles.adCard}>
+                <div className={styles.adImageContainer}>
+                  {ad.featured && <span className={styles.featuredBadge}>FEATURED</span>}
+                  <button className={styles.favoriteBtn}>♡</button>
+                  <span>{getCategoryIcon(ad.category)}</span>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+                <div className={styles.adDetails}>
+                  <div className={styles.adPrice}>Rs {ad.price.toLocaleString()}</div>
+                  <div className={styles.adTitle}>{ad.title}</div>
+                  <div className={styles.adFooter}>
+                    <span>{ad.location}</span>
+                    <span>{ad.createdAt ? (typeof ad.createdAt === 'string' ? ad.createdAt : new Date(ad.createdAt).toLocaleDateString()) : 'Just now'}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

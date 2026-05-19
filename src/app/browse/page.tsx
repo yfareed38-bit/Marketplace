@@ -1,18 +1,22 @@
 import React from 'react';
 import Link from 'next/link';
-import { getListings } from '@/actions/listings';
+import { getListings, getDynamicCategories } from '@/actions/listings';
 import styles from './page.module.css';
 
 export const dynamic = 'force-dynamic';
 
-const MOCK_ADS = [
-  { id: '1', title: 'iPhone 15 Pro Max - 256GB Dual Sim PTA Approved', price: 345000, category: 'Mobiles', location: 'DHA, Karachi', images: ['/phone-1.jpg'] },
-  { id: '2', title: 'Gaming Laptop - RTX 4080 Core i9 16GB', price: 285000, category: 'Electronics', location: 'Gulberg, Lahore', images: ['/laptop-1.jpg'] },
-  { id: '3', title: 'BMW M4 Competition Coupe 2023', price: 38500000, category: 'Cars', location: 'G-11, Islamabad', images: ['/car-1.jpg'] },
-  { id: '4', title: 'Cozy 2 Bed Apartment DHA Phase 6', price: 18500000, category: 'Property', location: 'DHA Phase 6, Lahore', images: ['/property-1.jpg'] },
-  { id: '5', title: 'Mountain Bike - Trek Fuel EX 8', price: 145000, category: 'Bikes', location: 'Johar Town, Lahore', images: ['/bike-1.jpg'] },
-  { id: '6', title: 'Designer Velvet Sofa Set 7 Seater', price: 75000, category: 'Furniture', location: 'Clifton, Karachi', images: ['/furniture-1.jpg'] },
-];
+function getCategoryIcon(cat: string) {
+  const lowerCat = cat.toLowerCase();
+  if (lowerCat.includes('mobile') || lowerCat.includes('phone')) return '📱';
+  if (lowerCat.includes('car') || lowerCat.includes('vehicle')) return '🚗';
+  if (lowerCat.includes('property') || lowerCat.includes('real estate')) return '🏠';
+  if (lowerCat.includes('electronic')) return '📺';
+  if (lowerCat.includes('bike') || lowerCat.includes('motorcycle')) return '🏍️';
+  if (lowerCat.includes('service')) return '🛠️';
+  if (lowerCat.includes('job')) return '💼';
+  if (lowerCat.includes('furniture')) return '🛋️';
+  return '📦';
+}
 
 export default async function BrowsePage({
   searchParams,
@@ -21,16 +25,13 @@ export default async function BrowsePage({
 }) {
   const categoryParam = searchParams.category as string | undefined;
   
-  const result = await getListings(categoryParam);
-  let liveAds = result.success && result.data ? result.data : [];
-  
-  // Use mock ads if DB is empty for demonstration purposes
-  let adsToDisplay = liveAds.length > 0 ? liveAds : MOCK_ADS;
-  
-  // Apply category filter to mock ads if using mock data
-  if (liveAds.length === 0 && categoryParam) {
-    adsToDisplay = MOCK_ADS.filter(ad => ad.category.toLowerCase() === categoryParam.toLowerCase());
-  }
+  const [adsRes, catsRes] = await Promise.all([
+    getListings(categoryParam),
+    getDynamicCategories()
+  ]);
+
+  const liveAds = adsRes.success && adsRes.data ? adsRes.data : [];
+  const dynamicCats = catsRes.success && catsRes.data ? catsRes.data : [];
 
   return (
     <div className={styles.container}>
@@ -42,11 +43,22 @@ export default async function BrowsePage({
           <div className={styles.filterGroup}>
             <h4>Category</h4>
             <div className={styles.checkboxList}>
-              <label className={styles.checkboxItem}><input type="checkbox" checked={categoryParam === 'Cars'} readOnly /> Cars</label>
-              <label className={styles.checkboxItem}><input type="checkbox" checked={categoryParam === 'Property'} readOnly /> Property</label>
-              <label className={styles.checkboxItem}><input type="checkbox" checked={categoryParam === 'Mobiles'} readOnly /> Mobiles</label>
-              <label className={styles.checkboxItem}><input type="checkbox" checked={categoryParam === 'Electronics'} readOnly /> Electronics</label>
-              <label className={styles.checkboxItem}><input type="checkbox" checked={categoryParam === 'Bikes'} readOnly /> Bikes</label>
+              {dynamicCats.length === 0 ? (
+                <span style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)' }}>No categories yet</span>
+              ) : (
+                dynamicCats.map((cat: string) => (
+                  <label key={cat} className={styles.checkboxItem} style={{ cursor: 'pointer' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={categoryParam === cat} 
+                      readOnly 
+                    /> 
+                    <Link href={categoryParam === cat ? '/browse' : `/browse?category=${encodeURIComponent(cat)}`} style={{ textDecoration: 'none', color: 'inherit', display: 'inline-block', width: '100%' }}>
+                      {cat}
+                    </Link>
+                  </label>
+                ))
+              )}
             </div>
             {categoryParam && (
               <div style={{ marginTop: '0.5rem' }}>
@@ -77,7 +89,7 @@ export default async function BrowsePage({
       {/* Main Content */}
       <main className={styles.mainContent}>
         <div className={styles.toolbar}>
-          <div className={styles.resultsCount}>Showing {adsToDisplay.length} Results</div>
+          <div className={styles.resultsCount}>Showing {liveAds.length} Results</div>
           <div className={styles.controls}>
             <select className={styles.select}>
               <option>Newest First</option>
@@ -92,10 +104,12 @@ export default async function BrowsePage({
         </div>
 
         <div className={styles.adsGrid}>
-          {adsToDisplay.map((ad: any) => (
+          {liveAds.map((ad: any) => (
             <Link key={ad.id} href={`/product/${ad.id}`} className={styles.adCard}>
               <div className={styles.adImage}>
-                <div style={{ width: '100%', height: '100%', background: 'linear-gradient(45deg, #e2e8f0, #cbd5e1)' }}></div>
+                <div style={{ width: '100%', height: '100%', background: 'linear-gradient(45deg, #e2e8f0, #cbd5e1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>
+                  {getCategoryIcon(ad.category)}
+                </div>
               </div>
               <div className={styles.adInfo}>
                 <span className={styles.adCategory}>{ad.category}</span>
@@ -107,18 +121,19 @@ export default async function BrowsePage({
               </div>
             </Link>
           ))}
-          {adsToDisplay.length === 0 && (
+          {liveAds.length === 0 && (
             <div style={{ padding: '3rem', textAlign: 'center', gridColumn: '1 / -1' }}>
               <h3>No ads found</h3>
-              <p style={{ color: 'var(--muted-foreground)' }}>Try adjusting your filters.</p>
+              <p style={{ color: 'var(--muted-foreground)' }}>{categoryParam ? `No ads found in "${categoryParam}". Try another category.` : 'Be the first to post an ad!'}</p>
+              <Link href="/post-ad" style={{ display: 'inline-block', marginTop: '1rem', padding: '0.75rem 1.5rem', background: 'var(--primary)', color: 'white', borderRadius: '0.5rem', textDecoration: 'none' }}>Post Ad</Link>
             </div>
           )}
         </div>
 
         {/* Pagination placeholder */}
-        {adsToDisplay.length > 0 && (
+        {liveAds.length > 0 && (
           <div style={{ marginTop: '4rem', display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
-            {[1, 2, 3, '...', 12].map((p, i) => (
+            {[1].map((p, i) => (
               <button key={i} style={{ 
                 width: '40px', height: '40px', borderRadius: '10px', 
                 background: p === 1 ? 'var(--primary)' : 'var(--card)',
