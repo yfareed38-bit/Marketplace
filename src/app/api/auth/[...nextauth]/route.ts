@@ -10,14 +10,36 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // Placeholder for actual DB authentication
-        if (credentials?.email === "admin@example.com" && credentials?.password === "admin") {
-          return { id: "1", name: "Admin User", email: "admin@example.com", role: "ADMIN" };
+        if (!credentials?.email || !credentials?.password) {
+          return null;
         }
-        if (credentials?.email && credentials?.password) {
-           return { id: "2", name: "Demo User", email: credentials.email, role: "USER" };
+        try {
+          const { prisma } = await import('@/lib/prisma');
+          const bcrypt = await import('bcryptjs');
+          
+          const user = await (prisma as any).user.findUnique({
+            where: { email: credentials.email },
+          });
+          
+          if (!user || !user.password) {
+            return null;
+          }
+          
+          const isValid = await bcrypt.compare(credentials.password, user.password);
+          if (!isValid) {
+            return null;
+          }
+          
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          };
+        } catch (error) {
+          console.error('NextAuth authorize error:', error);
+          return null;
         }
-        return null;
       },
     }),
   ],

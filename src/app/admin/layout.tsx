@@ -1,12 +1,19 @@
-import React from 'react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import styles from './layout.module.css';
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || (session.user as any).role !== 'ADMIN') {
+    redirect('/');
+  }
+
   return (
     <div className={styles.container}>
       <aside className={styles.sidebar}>

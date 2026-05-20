@@ -34,6 +34,7 @@ export default function ProductDetails({
   const [newRating, setNewRating] = useState(5);
   const [newComment, setNewComment] = useState('');
   const [showPhone, setShowPhone] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   useEffect(() => {
     async function loadData() {
@@ -90,14 +91,44 @@ export default function ProductDetails({
       <div className={styles.mainArea}>
         {/* Gallery */}
         <div className={styles.gallery}>
-          <div className={styles.mainImage}>
-            <div className={styles.imageOverlayIcon}>{getCategoryIcon(product.category)}</div>
+          <div className={styles.mainImage} style={{ position: 'relative', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border)' }}>
+            {product.images && product.images.length > 0 && product.images[0] !== '/placeholder-image.jpg' ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img 
+                src={product.images[activeImageIndex] || product.images[0]} 
+                alt={product.title} 
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <span style={{ fontSize: '5rem' }}>{getCategoryIcon(product.category)}</span>
+                <span style={{ color: 'var(--muted-foreground)', fontSize: '0.9rem' }}>No images available for this listing</span>
+              </div>
+            )}
           </div>
-          <div className={styles.thumbnails}>
-            <div className={`${styles.thumb} ${styles.thumbActive}`}>{getCategoryIcon(product.category)}</div>
-            <div className={styles.thumb}>🔍</div>
-            <div className={styles.thumb}>📦</div>
-          </div>
+          {product.images && product.images.length > 1 && product.images[0] !== '/placeholder-image.jpg' && (
+            <div className={styles.thumbnails} style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+              {product.images.map((img: string, idx: number) => (
+                <div 
+                  key={idx} 
+                  className={`${styles.thumb} ${activeImageIndex === idx ? styles.thumbActive : ''}`} 
+                  onClick={() => setActiveImageIndex(idx)}
+                  style={{ 
+                    width: '60px', 
+                    height: '60px', 
+                    borderRadius: '8px', 
+                    overflow: 'hidden', 
+                    cursor: 'pointer', 
+                    border: activeImageIndex === idx ? '2px solid var(--primary)' : '1px solid var(--border)',
+                    flexShrink: 0
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Description */}

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
+import { signUpUser } from '@/actions/users';
 import { useRouter } from 'next/navigation';
 import styles from '../login/page.module.css'; // Reusing login styles for consistency
 
@@ -20,8 +21,18 @@ export default function SignupPage() {
     setError('');
 
     try {
-      // In a real app, you would have an API route to register the user in the database first.
-      // For this mockup, we'll just sign them in using the credentials provider.
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('password', password);
+
+      const signupRes = await signUpUser(formData);
+      if (!signupRes.success) {
+        setError(signupRes.error || 'Failed to create account.');
+        setLoading(false);
+        return;
+      }
+
       const res = await signIn('credentials', {
         redirect: false,
         email,
@@ -29,7 +40,7 @@ export default function SignupPage() {
       });
 
       if (res?.error) {
-        setError('Error creating account. Please try again.');
+        setError('Account created, but automatic sign in failed. Please log in manually.');
       } else {
         router.push('/dashboard');
         router.refresh();

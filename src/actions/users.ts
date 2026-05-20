@@ -49,3 +49,42 @@ export async function updateUserProfile(formData: FormData) {
     return { success: false, error: 'Failed to update profile' };
   }
 }
+
+export async function signUpUser(formData: FormData) {
+  try {
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const name = formData.get('name') as string;
+
+    if (!email || !password || !name) {
+      return { success: false, error: 'All fields are required' };
+    }
+
+    const { prisma } = await import('@/lib/prisma');
+    const bcrypt = await import('bcryptjs');
+
+    const existingUser = await (prisma as any).user.findUnique({
+      where: { email }
+    });
+
+    if (existingUser) {
+      return { success: false, error: 'User with this email already exists' };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await (prisma as any).user.create({
+      data: {
+        email,
+        name,
+        password: hashedPassword,
+        role: 'USER'
+      }
+    });
+
+    return { success: true, data: { id: newUser.id, name: newUser.name, email: newUser.email } };
+  } catch (error: any) {
+    console.error('Failed to sign up user:', error);
+    return { success: false, error: error.message || 'Failed to sign up user' };
+  }
+}

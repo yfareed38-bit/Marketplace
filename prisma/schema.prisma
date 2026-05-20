@@ -10,6 +10,7 @@ model User {
   id            String    @id @default(cuid())
   name          String?
   email         String?   @unique
+  password      String?
   emailVerified DateTime?
   image         String?
   role          Role      @default(USER)
@@ -21,6 +22,13 @@ model User {
   messagesRcvd  Message[] @relation("MessagesReceived")
   reviews       Review[]  @relation("UserReviews")
   givenReviews  Review[]  @relation("GivenReviews")
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  icon      String?
+  createdAt DateTime @default(now())
 }
 
 model Listing {

@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
 // Support both uppercase (standard) and lowercase (Vercel UI quirk) env var names
 const dbUrl =
@@ -17,8 +19,11 @@ function createPrismaClient(): PrismaClient {
     );
   }
 
+  const pool = new Pool({ connectionString: dbUrl });
+  const adapter = new PrismaPg(pool);
+
   return new PrismaClient({
-    accelerateUrl: dbUrl,
+    adapter,
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
   });
 }

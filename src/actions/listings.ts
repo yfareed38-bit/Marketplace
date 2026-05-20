@@ -34,13 +34,16 @@ export async function createListing(formData: FormData) {
     const category = formData.get('category') as string;
     const condition = formData.get('condition') as string;
     const location = formData.get('location') as string;
-    const images = ['/placeholder-image.jpg'];
+    
+    // Read Cloudinary image URLs sent from form
+    const images = formData.getAll('images') as string[];
+    const imagesToSave = images.length > 0 ? images : ['/placeholder-image.jpg'];
 
     const { prisma } = await import('@/lib/prisma');
     const newListing = await (prisma as any).listing.create({
       data: {
         title, description, price, category,
-        condition, location, images,
+        condition, location, images: imagesToSave,
         sellerId: (session.user as any).id,
       },
     });
@@ -82,14 +85,9 @@ export async function getListingById(id: string) {
 export async function getDynamicCategories() {
   try {
     const { prisma } = await import('@/lib/prisma');
-    // Fetch unique categories currently in use
-    const distinctCategories = await (prisma as any).listing.findMany({
-      where: { status: 'ACTIVE' },
-      distinct: ['category'],
-      select: { category: true }
+    const categories = await (prisma as any).category.findMany({
+      orderBy: { name: 'asc' }
     });
-    
-    const categories = distinctCategories.map((c: any) => c.category);
     return { success: true, data: categories };
   } catch (error) {
     console.error('Failed to fetch categories:', error);

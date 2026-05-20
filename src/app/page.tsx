@@ -59,14 +59,18 @@ export default async function Home() {
           {dynamicCats.length === 0 ? (
             <p style={{ color: 'var(--muted-foreground)' }}>No categories found. Be the first to post an ad!</p>
           ) : (
-            dynamicCats.map((cat: string, index: number) => (
-              <Link key={index} href={`/browse?category=${encodeURIComponent(cat)}`} className={styles.categoryCard}>
-                <div className={styles.categoryIconWrapper}>
-                  {getCategoryIcon(cat)}
-                </div>
-                <span className={styles.categoryName}>{cat}</span>
-              </Link>
-            ))
+            dynamicCats.map((cat: any, index: number) => {
+              const catName = typeof cat === 'string' ? cat : cat.name;
+              const catIcon = typeof cat === 'string' ? getCategoryIcon(cat) : (cat.icon || getCategoryIcon(catName));
+              return (
+                <Link key={index} href={`/browse?category=${encodeURIComponent(catName)}`} className={styles.categoryCard}>
+                  <div className={styles.categoryIconWrapper}>
+                    {catIcon}
+                  </div>
+                  <span className={styles.categoryName}>{catName}</span>
+                </Link>
+              );
+            })
           )}
         </div>
       </section>

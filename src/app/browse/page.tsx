@@ -46,18 +46,21 @@ export default async function BrowsePage({
               {dynamicCats.length === 0 ? (
                 <span style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)' }}>No categories yet</span>
               ) : (
-                dynamicCats.map((cat: string) => (
-                  <label key={cat} className={styles.checkboxItem} style={{ cursor: 'pointer' }}>
-                    <input 
-                      type="checkbox" 
-                      checked={categoryParam === cat} 
-                      readOnly 
-                    /> 
-                    <Link href={categoryParam === cat ? '/browse' : `/browse?category=${encodeURIComponent(cat)}`} style={{ textDecoration: 'none', color: 'inherit', display: 'inline-block', width: '100%' }}>
-                      {cat}
-                    </Link>
-                  </label>
-                ))
+                dynamicCats.map((cat: any) => {
+                  const catName = typeof cat === 'string' ? cat : cat.name;
+                  return (
+                    <label key={catName} className={styles.checkboxItem} style={{ cursor: 'pointer' }}>
+                      <input 
+                        type="checkbox" 
+                        checked={categoryParam === catName} 
+                        readOnly 
+                      /> 
+                      <Link href={categoryParam === catName ? '/browse' : `/browse?category=${encodeURIComponent(catName)}`} style={{ textDecoration: 'none', color: 'inherit', display: 'inline-block', width: '100%' }}>
+                        {catName}
+                      </Link>
+                    </label>
+                  );
+                })
               )}
             </div>
             {categoryParam && (

@@ -144,3 +144,89 @@ export async function getSoldListings() {
     return { success: false, error: error.message || 'Failed to fetch sold listings' };
   }
 }
+
+export async function createCategory(name: string, icon?: string) {
+  try {
+    await verifyAdmin();
+    const { prisma } = await import('@/lib/prisma');
+    
+    const newCategory = await (prisma as any).category.create({
+      data: { name, icon }
+    });
+    
+    return { success: true, data: newCategory };
+  } catch (error: any) {
+    console.error('Failed to create category:', error);
+    return { success: false, error: error.message || 'Failed to create category' };
+  }
+}
+
+export async function deleteCategory(id: string) {
+  try {
+    await verifyAdmin();
+    const { prisma } = await import('@/lib/prisma');
+    
+    await (prisma as any).category.delete({
+      where: { id }
+    });
+    
+    return { success: true };
+  } catch (error: any) {
+    console.error('Failed to delete category:', error);
+    return { success: false, error: error.message || 'Failed to delete category' };
+  }
+}
+
+export async function updateCategory(id: string, name: string, icon?: string) {
+  try {
+    await verifyAdmin();
+    const { prisma } = await import('@/lib/prisma');
+    
+    const updated = await (prisma as any).category.update({
+      where: { id },
+      data: { name, icon }
+    });
+    
+    return { success: true, data: updated };
+  } catch (error: any) {
+    console.error('Failed to update category:', error);
+    return { success: false, error: error.message || 'Failed to update category' };
+  }
+}
+
+export async function updateUserRole(userId: string, role: 'USER' | 'ADMIN') {
+  try {
+    await verifyAdmin();
+    const { prisma } = await import('@/lib/prisma');
+    
+    const updated = await (prisma as any).user.update({
+      where: { id: userId },
+      data: { role }
+    });
+    
+    return { success: true, data: updated };
+  } catch (error: any) {
+    console.error('Failed to update user role:', error);
+    return { success: false, error: error.message || 'Failed to update user role' };
+  }
+}
+
+export async function deleteUser(userId: string) {
+  try {
+    await verifyAdmin();
+    const { prisma } = await import('@/lib/prisma');
+    
+    await (prisma as any).listing.deleteMany({
+      where: { sellerId: userId }
+    });
+
+    await (prisma as any).user.delete({
+      where: { id: userId }
+    });
+    
+    return { success: true };
+  } catch (error: any) {
+    console.error('Failed to delete user:', error);
+    return { success: false, error: error.message || 'Failed to delete user' };
+  }
+}
